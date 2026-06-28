@@ -1,0 +1,40 @@
+// calculated-columns.dax
+// Lajur terkira (calculated columns) dan jadual Kalendar untuk model data.
+// Cara guna: Modeling > New column (untuk lajur) atau New table (untuk Kalendar).
+
+// ---------- Lajur terkira dalam jadual "aduan" ----------
+
+// Tahun aduan diterima (jika tidak guna jadual Kalendar)
+Tahun = YEAR(aduan[tarikh_terima])
+
+// Tempoh hari untuk selesaikan aduan (kosong jika belum selesai)
+Tempoh Hari =
+IF(
+    ISBLANK(aduan[tarikh_selesai]),
+    BLANK(),
+    DATEDIFF(aduan[tarikh_terima], aduan[tarikh_selesai], DAY)
+)
+
+// Kumpulan tempoh (untuk analisis prestasi siasatan)
+Kumpulan Tempoh =
+SWITCH(
+    TRUE(),
+    ISBLANK(aduan[Tempoh Hari]), "Belum Selesai",
+    aduan[Tempoh Hari] <= 14, "≤ 2 minggu",
+    aduan[Tempoh Hari] <= 30, "2–4 minggu",
+    "> 1 bulan"
+)
+
+
+// ---------- Jadual Kalendar (Modeling > New table) ----------
+// Selepas dicipta, buat hubungan: aduan[tarikh_terima]  →  Kalendar[Date]
+
+Kalendar =
+ADDCOLUMNS(
+    CALENDAR(DATE(2025, 1, 1), DATE(2026, 12, 31)),
+    "Tahun", YEAR([Date]),
+    "No Bulan", MONTH([Date]),
+    "Nama Bulan", FORMAT([Date], "mmm"),
+    "Tahun-Bulan", FORMAT([Date], "YYYY-MM"),
+    "Suku Tahun", "S" & ROUNDUP(MONTH([Date]) / 3, 0)
+)

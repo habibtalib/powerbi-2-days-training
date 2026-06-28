@@ -1,0 +1,55 @@
+// measures.dax
+// Sukatan (measures) DAX untuk Dashboard Aduan Alam Sekitar NRES.
+// Cara guna: klik kanan jadual "aduan" > New measure, kemudian tampal satu sukatan.
+// Andaian model: jadual fakta "aduan" berkaitan dengan "agensi", "negeri",
+// "kategori", dan "Kalendar".
+
+// ---------- Kiraan asas ----------
+
+Jumlah Aduan = COUNTROWS(aduan)
+
+Aduan Selesai = CALCULATE([Jumlah Aduan], aduan[status] = "Selesai")
+
+Aduan Dalam Siasatan = CALCULATE([Jumlah Aduan], aduan[status] = "Dalam Siasatan")
+
+Aduan Baru = CALCULATE([Jumlah Aduan], aduan[status] = "Baru")
+
+
+// ---------- Peratusan & purata ----------
+
+% Selesai = DIVIDE([Aduan Selesai], [Jumlah Aduan])
+
+Purata Tempoh Selesai =
+AVERAGEX(
+    FILTER(aduan, NOT ISBLANK(aduan[tarikh_selesai])),
+    DATEDIFF(aduan[tarikh_terima], aduan[tarikh_selesai], DAY)
+)
+
+
+// ---------- Tindakan penguatkuasaan (RM) ----------
+
+Jumlah Kompaun (RM) = SUM(aduan[amaun_kompaun])
+
+Bilangan Kompaun = CALCULATE([Jumlah Aduan], aduan[tindakan] = "Kompaun")
+
+Purata Kompaun (RM) =
+DIVIDE([Jumlah Kompaun (RM)], [Bilangan Kompaun])
+
+
+// ---------- Kepintaran masa (time intelligence) ----------
+// Memerlukan jadual Kalendar + hubungan ke aduan[tarikh_terima]
+
+Aduan YTD = TOTALYTD([Jumlah Aduan], 'Kalendar'[Date])
+
+Aduan Bulan Lepas =
+CALCULATE([Jumlah Aduan], DATEADD('Kalendar'[Date], -1, MONTH))
+
+Perubahan Bulanan % =
+DIVIDE([Jumlah Aduan] - [Aduan Bulan Lepas], [Aduan Bulan Lepas])
+
+
+// ---------- Analisis mengikut negeri ----------
+// Memerlukan hubungan aduan[negeri] → negeri[negeri]
+
+Aduan per 100k Penduduk =
+DIVIDE([Jumlah Aduan], SUM(negeri[populasi])) * 100000
