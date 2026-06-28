@@ -171,6 +171,31 @@
         </div>
       </section>
 
+      <!-- 4b2. Anatomy of BI (5 concepts) -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Konsep asas</div>
+          <div class="center-stack tight">
+            <h2>Anatomi BI: lima konsep teras.</h2>
+            <div class="flow">
+              <div class="node">Domain</div><div class="arrow">→</div>
+              <div class="node">Data</div><div class="arrow">→</div>
+              <div class="node accent">Model</div><div class="arrow">→</div>
+              <div class="node">Analysis</div><div class="arrow">→</div>
+              <div class="node purple">Visualization</div>
+            </div>
+            <div class="grid five">
+              <div class="panel"><h3>Domain</h3><p>Bidang &amp; konteks perniagaan. <em>NRES: penguatkuasaan alam sekitar.</em></p></div>
+              <div class="panel"><h3>Data</h3><p>Sumber dalaman/luaran, berstruktur. <em>CSV aduan + dimensi.</em></p></div>
+              <div class="panel"><h3>Model</h3><p>Bersih, kategori &amp; hubungkan → model semantik. <em>Skema bintang.</em></p></div>
+              <div class="panel"><h3>Analysis</h3><p>Agregat, KPI &amp; metrik. <em>DAX: % Selesai, Kompaun.</em></p></div>
+              <div class="panel"><h3>Visualization</h3><p>Carta, laporan &amp; dashboard interaktif. <em>Kad, peta, matrix.</em></p></div>
+            </div>
+          </div>
+          <div class="footer"><span>Anatomi BI</span><span>Sumber: Learn Microsoft Power BI (3rd ed.), Bab 1</span></div>
+        </div>
+      </section>
+
       <!-- 4c. What is Power BI -->
       <section>
         <div class="slide-frame">
@@ -223,6 +248,27 @@
             </table>
           </div>
           <div class="footer"><span>Desktop vs Service</span><span>Kita bina di Desktop (Hari 1–2), terbit ke Service (Hari 2)</span></div>
+        </div>
+      </section>
+
+      <!-- 4e2. Licensing -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Lesen &amp; kapasiti</div>
+          <div class="center-stack tight">
+            <h2>Lesen Power BI: mana untuk berkongsi?</h2>
+            <table>
+              <thead><tr><th>Lesen</th><th>Kos (anggaran)</th><th>Untuk siapa</th><th>Nota ringkas</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Free</strong></td><td>Percuma</td><td>Individu, belajar</td><td>Desktop penuh; kongsi hanya “Publish to web” (tiada keselamatan)</td></tr>
+                <tr><td><strong>Pro</strong></td><td>≈ USD 14 / pengguna / bulan</td><td>Pasukan &lt; ~500 pengguna</td><td>Kongsi &amp; kolaborasi penuh; model ≤ 1 GB</td></tr>
+                <tr><td><strong>Premium Per User</strong></td><td>≈ USD 24 / pengguna / bulan</td><td>Perlu ciri lanjutan</td><td>Model lebih besar, refresh lebih kerap</td></tr>
+                <tr><td><strong>Fabric (kapasiti)</strong></td><td>Ikut saiz (F2–F2048)</td><td>Organisasi besar</td><td>F64+: pembaca Free boleh lihat + Copilot</td></tr>
+              </tbody>
+            </table>
+            <p class="small">Harga berubah — semak <strong>powerbi.microsoft.com/pricing</strong> untuk angka terkini. Untuk bengkel ini, <strong>Free</strong> (Desktop) memadai; <strong>Pro</strong> atau percubaan <strong>Fabric</strong> diperlukan untuk menerbitkan &amp; berkongsi.</p>
+          </div>
+          <div class="footer"><span>Lesen Power BI</span><span>Shared (Free/Pro) · Dedicated (PPU/Fabric/Embedded/PBIRS)</span></div>
         </div>
       </section>
 
@@ -290,6 +336,38 @@
             </div>
           </div>
           <div class="footer"><span>Konsep teras</span><span>Hari 1: Get Data → Model · Hari 2: Visualize → Publish</span></div>
+        </div>
+      </section>
+
+      <!-- 5b. Planning a BI project -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Sebelum membina</div>
+          <div class="center-stack tight">
+            <h2>Merancang projek BI dengan baik.</h2>
+            <div class="grid two">
+              <div class="panel"><h3>5 aktiviti perancangan</h3>
+                <ul>
+                  <li><strong>Stakeholder, matlamat &amp; keperluan</strong> — siapa &amp; soalan apa?</li>
+                  <li><strong>Sumber daya</strong> — domain expert, data modeler, report author, admin</li>
+                  <li><strong>Punca data</strong> — kenal pasti &amp; sambung</li>
+                  <li><strong>Reka model</strong> — fakta, dimensi &amp; granulariti</li>
+                  <li><strong>Rancang laporan &amp; dashboard</strong></li>
+                </ul>
+              </div>
+              <div class="panel"><h3>Soalan keperluan utama</h3>
+                <ul>
+                  <li>Siapa akses &amp; berapa ramai? → lesen &amp; <strong>RLS</strong></li>
+                  <li>Tahap granulariti data? (transaksi vs agregat)</li>
+                  <li>Berapa banyak data sejarah? → Import vs DirectQuery</li>
+                  <li>KPI teras &amp; definisinya?</li>
+                  <li>Kalendar apa? (tahun biasa vs fiskal)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="callout">Projek kita (NRES) sudah dirancang: matlamat = pantau aduan &amp; penguatkuasaan · KPI = Jumlah Aduan, % Selesai, Kompaun (RM) · kalendar tahun biasa · mod Import.</div>
+          </div>
+          <div class="footer"><span>Perancangan</span><span>Sumber: Learn Microsoft Power BI (3rd ed.), Bab 2</span></div>
         </div>
       </section>
 
