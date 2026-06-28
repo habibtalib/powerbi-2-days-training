@@ -1,0 +1,16 @@
+# Power BI — fail kerja peserta (boleh besar; nyahkomen jika tidak mahu commit)
+# *.pbix
+
+# Power BI temp/cache
+*.pbix.tmp
+*.~tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+powerbi_2025.pdf
+ss/*
