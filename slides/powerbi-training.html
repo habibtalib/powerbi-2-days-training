@@ -414,7 +414,7 @@
               <div class="panel fragment"><h3>Data</h3><p>Lihat jadual &amp; baris yang telah dimuat.</p></div>
               <div class="panel fragment"><h3>Model</h3><p>Urus hubungan antara jadual (skema bintang).</p></div>
             </div>
-            <div class="callout">Power BI Desktop percuma (Windows sahaja). Pengguna macOS perlu mesin maya Windows.</div>
+            <div class="callout">Power BI Desktop percuma (Windows sahaja). Pengguna macOS perlu mesin maya Windows. <span class="small">(Versi terkini menambah paparan ke-4: <strong>DAX Query view</strong> — untuk lanjutan, tidak digunakan dalam bengkel ini.)</span></div>
           </div>
           <div class="footer"><span>Persediaan</span><span>Muat turun dari Microsoft Store / powerbi.microsoft.com</span></div>
         </div>
@@ -454,6 +454,44 @@ Table.AddColumn(t, "tempoh_hari", each
             <p class="small">Sebelum muat: hidupkan <strong>Data Profiling</strong> (View → Column quality / distribution / profile) untuk sahkan tiada nilai kosong, ralat, atau pendua.</p>
           </div>
           <div class="footer"><span>Power Query (M)</span><span>Promote headers → ubah jenis → trim → custom column → profil data → Close &amp; Apply</span></div>
+        </div>
+      </section>
+
+      <!-- H1b. Applied Steps -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Power Query · konsep</div>
+          <div class="center-stack">
+            <h2>Query = resipi langkah boleh ulang.</h2>
+            <div class="flow">
+              <div class="node">Source</div><div class="arrow">→</div>
+              <div class="node">Promoted Headers</div><div class="arrow">→</div>
+              <div class="node">Changed Type</div><div class="arrow">→</div>
+              <div class="node accent">+ langkah anda</div>
+            </div>
+            <div class="grid two tight">
+              <div class="panel"><p>Setiap query ialah senarai <strong>Applied Steps</strong> yang dirakam mengikut urutan. Klik mana-mana langkah untuk lihat data pada peringkat itu — boleh edit, susun semula, atau buang.</p></div>
+              <div class="panel"><p>Di sebalik tabir, setiap langkah = satu baris kod <strong>M</strong>. <strong>Refresh</strong> menjalankan semula semua langkah atas data terbaru — tiada kerja manual berulang.</p></div>
+            </div>
+            <div class="callout">Sebab itu kita bersihkan dalam Power Query, bukan Excel: fail aduan bulanan baharu → satu klik <strong>Refresh</strong> → bersih semula automatik.</div>
+          </div>
+          <div class="footer"><span>Applied Steps</span><span>Sumber: Bab 4 · Touring Power Query Editor</span></div>
+        </div>
+      </section>
+
+      <!-- H1c. Merge vs Append -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Power Query · gabung data</div>
+          <div class="center-stack tight">
+            <h2>Merge vs Append.</h2>
+            <div class="grid two">
+              <div class="panel"><h3>Merge → tambah LAJUR</h3><p>Cantum dua query ikut lajur sepadan (seperti SQL <em>JOIN</em>). 6 Join Kind: Left/Right/Full Outer, Inner, Left/Right Anti. Selepas merge, klik <strong>Expand</strong> untuk pilih lajur.</p></div>
+              <div class="panel"><h3>Append → tambah BARIS</h3><p>Tindan baris dua/lebih query jadi satu jadual. Sesuai untuk satukan fail berformat sama (Jan + Feb + Mac) menjadi satu fakta.</p></div>
+            </div>
+            <div class="callout">NRES: <strong>Append</strong> eksport aduan bulanan setiap agensi → satu jadual <code>aduan</code>. (Untuk hubungkan fakta↔dimensi kita guna <strong>relationship</strong>, bukan merge.)</div>
+          </div>
+          <div class="footer"><span>Merge / Append</span><span>Sumber: Bab 4 · Merging, copying &amp; appending queries</span></div>
         </div>
       </section>
 
@@ -536,6 +574,22 @@ ADDCOLUMNS(
         </div>
       </section>
 
+      <!-- H2b. Row vs Filter context -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Konsep DAX</div>
+          <div class="center-stack tight">
+            <h2>Evaluation context: row vs filter.</h2>
+            <div class="grid two">
+              <div class="panel"><h3>Row context</h3><p>Pengiraan hanya “nampak” <strong>baris semasa</strong>. Default untuk <strong>calculated column</strong> — cth <code>tarikh_selesai − tarikh_terima</code> bagi setiap aduan.</p></div>
+              <div class="panel"><h3>Filter context</h3><p>Pengiraan dinilai atas baris yang <strong>ditapis</strong> oleh visual, slicer &amp; relationship. Fungsi agregat (SUM, COUNTROWS) sentiasa bekerja di sini.</p></div>
+            </div>
+            <div class="callout"><strong>Measure tiada row context</strong> — ia bermula dari filter context visual, jadi mesti guna agregat bila merujuk lajur. Inilah sebab measure &amp; calculated column boleh beri jawapan berbeza.</div>
+          </div>
+          <div class="footer"><span>Evaluation context</span><span>Sumber: Bab 5 · Understanding the context</span></div>
+        </div>
+      </section>
+
       <section>
         <div class="slide-frame">
           <div class="eyebrow">Langkah 3</div>
@@ -550,6 +604,22 @@ Aduan Selesai =
             <div class="callout"><code>CALCULATE</code> menukar konteks penapis · <code>DIVIDE</code> selamat daripada ralat bahagi-sifar.</div>
           </div>
           <div class="footer"><span>New measure</span><span>COUNTROWS · CALCULATE · DIVIDE</span></div>
+        </div>
+      </section>
+
+      <!-- H2d. Quick measures -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Mesra pemula</div>
+          <div class="center-stack">
+            <h2>Quick measures: DAX tanpa menulis DAX.</h2>
+            <div class="grid two tight">
+              <div class="panel"><p><strong>New quick measure</strong> buka pane untuk pilih pengiraan biasa — <em>Running total</em>, <em>% of total</em>, <em>Average per category</em> — dan Power BI <strong>jana formula DAX automatik</strong>.</p></div>
+              <div class="panel"><p>Hasilnya measure DAX biasa yang boleh <strong>dibuka, dipelajari &amp; diubah</strong> kemudian. Buku: “particularly helpful when just beginning to use DAX”.</p></div>
+            </div>
+            <div class="callout">NRES: cipta <em>Running total</em> aduan mengikut Month, atau <em>% of total</em> aduan mengikut agensi — tanpa menulis DAX sendiri.</div>
+          </div>
+          <div class="footer"><span>Quick measures</span><span>Sumber: Bab 6 · Quick measures</span></div>
         </div>
       </section>
 
@@ -587,6 +657,22 @@ Perubahan Bulanan % =
         </div>
       </section>
 
+      <!-- H2f. Sort by Column -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Gotcha biasa</div>
+          <div class="center-stack">
+            <h2>Sort by Column: susun teks ikut nombor.</h2>
+            <div class="grid two tight">
+              <div class="panel"><p><strong>Masalah:</strong> lajur teks (nama bulan, status) disusun ikut <strong>abjad</strong> — April, August, December… bukan urutan sebenar.</p></div>
+              <div class="panel"><p><strong>Selesai:</strong> pilih lajur teks → <strong>Column tools &gt; Sort by column</strong> → pilih lajur nombor padanan (cth Nama Bulan ikut No Bulan 1–12).</p></div>
+            </div>
+            <div class="callout">Setiap nilai teks mesti petakan ke <strong>satu</strong> nombor konsisten. Carta kemas kini paksi automatik. NRES: susun <code>status</code> ikut aliran proses (Baru → Dalam Siasatan → Selesai → Ditutup), bukan A–Z.</div>
+          </div>
+          <div class="footer"><span>Sort by column</span><span>Sumber: Bab 3 · Creating more visualizations</span></div>
+        </div>
+      </section>
+
       <section>
         <div class="slide-frame">
           <div class="eyebrow">Langkah 6</div>
@@ -600,6 +686,22 @@ Perubahan Bulanan % =
             <div class="callout">Format: tajuk jelas, label data, warna konsisten mengikut agensi.</div>
           </div>
           <div class="footer"><span>Visualize</span><span>Peta + matrix + kad ringkasan</span></div>
+        </div>
+      </section>
+
+      <!-- H2h. Conditional formatting -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Polish visual</div>
+          <div class="center-stack tight">
+            <h2>Conditional formatting (Table &amp; Matrix).</h2>
+            <div class="grid two">
+              <div class="panel"><h3>Pilihan format</h3><p>Background color, Font color, Data bars, Icons. Tiga gaya: <strong>Gradient</strong> (skala min–max), <strong>Rules</strong> (julat nilai), <strong>Field value</strong> (warna terus dari measure).</p></div>
+              <div class="panel"><h3>Field value (berkuasa)</h3><p>Cipta measure pulangkan kod hex, cth:<br><code>IF([% Selesai] &gt;= [Sasaran], "#1a7f4b", "#b42318")</code> → hijau/merah ikut sasaran.</p></div>
+            </div>
+            <div class="callout">NRES: dalam matrix agensi × kategori, jadikan <strong>% Selesai</strong> heat-map, atau warnakan <strong>Jumlah Kompaun (RM)</strong> ikut negeri — nilai penting nampak serta-merta.</div>
+          </div>
+          <div class="footer"><span>Conditional formatting</span><span>Sumber: Bab 6 · Conditional formatting</span></div>
         </div>
       </section>
 
