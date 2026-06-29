@@ -44,6 +44,17 @@ Setiap baris ialah satu aduan/kes alam sekitar.
 | `agensi` | Teks | Agensi yang bertanggungjawab bagi kategori tersebut |
 | `keterangan` | Teks | Penerangan ringkas kategori |
 
+## `sasaran.csv` — Jadual Sasaran (5 baris, Hari 2)
+
+Sasaran prestasi setiap agensi — digunakan untuk **conditional formatting** & kes "prestasi vs sasaran" pada Hari 2.
+
+| Lajur | Jenis | Penerangan |
+|-------|-------|------------|
+| `agensi` | Teks | Nama penuh agensi (kunci padanan) |
+| `sasaran_selesai` | Nombor (0–1) | Sasaran peratus kes selesai, cth `0.70` = 70% |
+
+> **Nota:** Dimuat sebagai jadual **disconnected** (tiada hubungan) — sukatan `Sasaran % Selesai` mencapainya dengan `LOOKUPVALUE`. Lihat README Hari 2, Langkah 6 › Conditional formatting.
+
 ## Hubungan dalam model
 
 ```
