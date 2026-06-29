@@ -342,6 +342,22 @@ Setiap titik = satu negeri. Cari titik yang **tinggi pada paksi-Y** (banyak adua
 
 > **⚠️ Gotcha biasa:** Jangan seret `aduan[no_aduan]` terus ke **Y-axis**. Ia kolum **teks**, jadi paksi scatter (yang perlukan nilai numerik beragregat) akan tersekat atau dikunci sebagai *Don't summarize*. Gunakan **sukatan** `Jumlah Aduan` (`COUNTROWS(aduan)`) — lebih tepat (bilang baris, bukan teks unik) dan boleh diguna semula. *(Kalau betul-betul mahu tanpa sukatan: seret `no_aduan`, klik ▼ pada medan dalam well Y-axis → pilih **Count**.)*
 
+### Small multiples — bandingkan kategori dalam setiap agensi
+
+Kadang kita mahu **satu bar stacked bagi setiap kategori**, tetapi **dikumpulkan ikut agensi** — cth. JAS (3 kategori) vs JPSM (2) vs agensi lain (1). Power BI **tiada** visual "clustered + stacked" serentak, jadi cara paling kemas dan native ialah **Small multiples**: satu stacked bar chart dipecahkan jadi panel kecil per agensi.
+
+1. Tambah **Stacked bar chart**:
+   - **Y-axis:** `kategori[kategori]`
+   - **Legend:** `aduan[status]`  ← bahagian *stacked* (warna)
+   - **X-axis (Values):** `Jumlah Aduan`
+2. Seret **`agensi[singkatan]`** ke telaga **Small multiples**.
+
+Hasil: grid panel — panel **JAS** tunjuk **3 bar stacked**, **JPSM** 2 bar, agensi lain 1 bar. Setiap panel = satu agensi, setiap bar = satu kategori, warna = status.
+
+> **Alternatif:**
+> - **Axis hierarchy** (satu carta, tanpa Small multiples): letak `agensi[singkatan]` **kemudian** `kategori[kategori]` pada **Y-axis** stacked bar chart, Legend = `status`, kemudian klik **Expand all** (↧). Bar stacked tersusun berkelompok di bawah setiap agensi.
+> - **Custom visual** untuk *clustered-stacked* sebenar (bar bersebelahan **dan** stacked): **⋯ → Get more visuals** (AppSource) → cari "Clustered stacked column/bar chart". Ada had lesen & perlu internet — kurang sesuai untuk kelas pemula.
+
 ### Matriks agensi × status
 
 Tambah visual **Matrix**:
@@ -556,6 +572,15 @@ Kes ini melanjutkan kemahiran Hari 2 dengan **soalan pengurusan sebenar** NRES. 
 
 1. Guna measure `Aduan per 100k Penduduk`.
 2. Bina **Filled map**: Location = `negeri[negeri]`, Saturation = `Aduan per 100k Penduduk`. Bandingkan dengan peta Jumlah Aduan mentah — negeri kecil mungkin "naik" selepas dinormalkan.
+
+### Kes 7 — Kategori dalam setiap agensi (small multiples)
+**Soalan:** *Bagaimana taburan status berbeza antara kategori dalam setiap agensi?*
+
+1. Bina **Stacked bar chart**: Y-axis = `kategori[kategori]`, Legend = `aduan[status]`, Values = `Jumlah Aduan`.
+2. Seret `agensi[singkatan]` ke telaga **Small multiples** (rujuk Langkah 6).
+3. Perhatikan panel **JAS** (3 kategori) vs **JPSM** (2) vs agensi lain (1) — banding corak status setiap kategori secara adil dalam satu pandangan.
+
+> NRES: "Agensi mana ada kategori dengan kes 'Baru' menumpuk?" — small multiples mendedahkan corak per-kategori yang tersembunyi dalam jumlah agensi agregat.
 
 > **🎯 Cabaran gabungan — dashboard eksekutif NRES:** Satukan **KPI (Kes 1)** + **matrix heat-map sasaran (Kes 2)** + **peta Top-5 (Kes 5/6)** + **line chart dengan purata 3 bulan (Kes 4)** pada satu halaman. Pakai satu **Report theme** (Accessible), tetapkan **report-level filter** tahun semasa, dan lengkapkan **senarai semak sebelum publish** (Langkah 7B) sebelum menerbitkan.
 
