@@ -420,6 +420,25 @@
         </div>
       </section>
 
+      <!-- H1a2. Desktop interface anatomy -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Orientasi antara muka</div>
+          <div class="center-stack tight">
+            <h2>Anatomi Power BI Desktop.</h2>
+            <div class="grid three">
+              <div class="panel"><h3>Header</h3><p>Save / Undo / Redo, nama fail (.pbix), Search, Sign in (Microsoft 365).</p></div>
+              <div class="panel"><h3>Ribbon</h3><p>Tab kekal (File, Home, Help) + kontekstual (Modeling, View, Insert, Format, Table/Column/Measure tools).</p></div>
+              <div class="panel"><h3>Formula Bar</h3><p>Tempat tulis DAX — measure, calculated column &amp; calculated table.</p></div>
+              <div class="panel"><h3>Canvas</h3><p>Kawasan kerja utama (Report / Table / Model view).</p></div>
+              <div class="panel"><h3>Panes</h3><p>Data pane sentiasa ada; Filters &amp; Visualizations hanya dalam Report view.</p></div>
+              <div class="panel"><h3>Footer</h3><p>Bilangan halaman, kawalan zoom, statistik jadual/lajur.</p></div>
+            </div>
+          </div>
+          <div class="footer"><span>Tour antara muka</span><span>Sumber: Bab 3 · Touring the desktop</span></div>
+        </div>
+      </section>
+
       <section>
         <div class="slide-frame">
           <div class="eyebrow">Langkah 1</div>
@@ -495,6 +514,22 @@ Table.AddColumn(t, "tempoh_hari", each
         </div>
       </section>
 
+      <!-- H1c2. Unpivot & disable load -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Power Query · bentuk data</div>
+          <div class="center-stack tight">
+            <h2>Unpivot &amp; disable load.</h2>
+            <div class="grid two">
+              <div class="panel"><h3>Unpivot Columns</h3><p>Data Excel selalu “wide” — satu lajur per bulan (Jan…Dec). Pilih lajur bulan → <strong>Transform &gt; Unpivot Columns</strong> → jadi 2 lajur: <em>Attribute</em> + <em>Value</em>. Rename Attribute → “Bulan”.</p></div>
+              <div class="panel"><h3>Enable load OFF</h3><p>Query perantara (hasil Merge/Append) boleh dimatikan <strong>Enable load</strong> supaya ia tidak jadi jadual berasingan dalam model semantik.</p></div>
+            </div>
+            <div class="callout">Prinsip model bersih: elak banyak lajur untuk data element sama, elak jadual perantara tak perlu. NRES: kiraan per-bulan → Unpivot → boleh dikait ke Kalendar.</div>
+          </div>
+          <div class="footer"><span>Unpivot / staging</span><span>Sumber: Bab 4 · Unpivoting &amp; disabling loads</span></div>
+        </div>
+      </section>
+
       <section>
         <div class="slide-frame">
           <div class="eyebrow">Langkah 4</div>
@@ -512,6 +547,22 @@ Table.AddColumn(t, "tempoh_hari", each
         </div>
       </section>
 
+      <!-- H1d. Cardinality & cross-filter -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Model · pendalaman</div>
+          <div class="center-stack tight">
+            <h2>Cardinality &amp; arah penapis.</h2>
+            <div class="grid two">
+              <div class="panel"><h3>Cardinality</h3><p>4 jenis: One-to-one, <strong>One-to-many</strong>, Many-to-one, Many-to-many. Garis tunjuk <strong>1</strong> di sisi unik, <strong>*</strong> di sisi banyak. Star schema = One-to-many.</p></div>
+              <div class="panel"><h3>Cross-filter direction</h3><p><strong>Single</strong>: tapisan mengalir satu arah (dim → fakta). <strong>Both</strong>: dua arah (guna berhati-hati). Hanya satu relationship <strong>active</strong> (garis pejal) antara dua jadual.</p></div>
+            </div>
+            <div class="callout">Cipta: seret lajur dalam Model view, atau <strong>Manage relationships</strong> (Autodetect). NRES: semua dim → <code>aduan</code> ialah One-to-many, cross-filter Single.</div>
+          </div>
+          <div class="footer"><span>Relationships</span><span>Sumber: Bab 5 · Creating and understanding relationships</span></div>
+        </div>
+      </section>
+
       <section>
         <div class="slide-frame">
           <div class="eyebrow">Langkah 5</div>
@@ -526,6 +577,23 @@ Table.AddColumn(t, "tempoh_hari", each
             <div class="callout">Tambah <strong>Slicer</strong> untuk <code>zon</code> — semua visual menapis serentak.</div>
           </div>
           <div class="footer"><span>Visualize</span><span>Seret medan ke kanvas + anak tetingkap Visualizations</span></div>
+        </div>
+      </section>
+
+      <!-- H1f. Visualizations pane -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Visualizations pane</div>
+          <div class="center-stack tight">
+            <h2>Tab Build, Format, Analytics.</h2>
+            <div class="grid three">
+              <div class="panel"><h3>Build</h3><p>Pilih jenis visual &amp; seret medan ke fields (X-axis, Y-axis, Legend, Values, Small multiples).</p></div>
+              <div class="panel"><h3>Format</h3><p>Ubah rupa: Title, Data labels, font, warna. Dua sub-tab: <strong>Visual</strong> &amp; <strong>General</strong>.</p></div>
+              <div class="panel"><h3>Analytics</h3><p>Tambah garisan: Average, Min/Max, atau constant line (visual tertentu sahaja).</p></div>
+            </div>
+            <div class="callout">Tukar agregasi medan (Sum / Count / Average) guna anak panah turun. Tukar jenis visual bila-bila — medan kekal terpasang.</div>
+          </div>
+          <div class="footer"><span>Visualizations pane</span><span>Sumber: Bab 3 · Formatting &amp; analytics</span></div>
         </div>
       </section>
 
@@ -673,6 +741,23 @@ Perubahan Bulanan % =
         </div>
       </section>
 
+      <!-- H2g. Troubleshooting calculations -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Tabiat kualiti</div>
+          <div class="center-stack tight">
+            <h2>Semak &amp; troubleshoot sukatan.</h2>
+            <div class="grid three">
+              <div class="panel"><h3>Boundary cases</h3><p>Sort hasil (% tertinggi/terendah), siasat nilai ekstrem — sahkan munasabah, bukan ralat.</p></div>
+              <div class="panel"><h3>Slicing</h3><p>Tambah slicer (bulan/kategori) &amp; periksa nilai serta boundary bagi data ditapis.</p></div>
+              <div class="panel"><h3>Grouping</h3><p>Letak ukuran ikut kumpulan (zon/agensi); pastikan “roll up” &amp; baris Total betul.</p></div>
+            </div>
+            <div class="callout">Guna <code>DIVIDE</code> (bukan <code>/</code>) supaya bahagi-sifar pulang BLANK, bukan ralat. Awas baris <strong>Total</strong> — ia dinilai dalam context tersendiri.</div>
+          </div>
+          <div class="footer"><span>Troubleshoot</span><span>Sumber: Bab 5 · Checking &amp; troubleshooting calculations</span></div>
+        </div>
+      </section>
+
       <section>
         <div class="slide-frame">
           <div class="eyebrow">Langkah 6</div>
@@ -705,6 +790,38 @@ Perubahan Bulanan % =
         </div>
       </section>
 
+      <!-- H2i. Top-N filtering -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Corak analisis</div>
+          <div class="center-stack tight">
+            <h2>Top-N filtering: fokus pemain utama.</h2>
+            <div class="grid two">
+              <div class="panel"><h3>Cara</h3><p>Dalam <strong>Filters pane</strong>, tukar Filter type medan kepada <strong>Top N</strong>. Pilih <em>Top</em> atau <em>Bottom</em>, masukkan N (cth 10). Seret measure ke <strong>By value</strong> sebagai kriteria. Klik Apply filter.</p></div>
+              <div class="panel"><h3>Guna</h3><p>Visual papar hanya N teratas/terbawah — bukan senarai panjang. Salin visual &amp; tukar Top→Bottom untuk dua sudut. (Bottom boleh papar &gt;N bila ada seri.)</p></div>
+            </div>
+            <div class="callout">NRES: “Top 5 negeri ikut Jumlah Aduan” atau “Top 3 kategori dengan Jumlah Kompaun (RM) tertinggi”.</div>
+          </div>
+          <div class="footer"><span>Top-N filtering</span><span>Sumber: Bab 6 · Top-N filtering</span></div>
+        </div>
+      </section>
+
+      <!-- H2j. Report theme -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Branding</div>
+          <div class="center-stack tight">
+            <h2>Tema laporan: warna konsisten.</h2>
+            <div class="grid two">
+              <div class="panel"><h3>Mula mudah</h3><p><strong>View &gt; Themes</strong> — pilih theme terbina atau <strong>Accessible themes</strong> (mesra colorblind). Satu set warna + saiz font dikenakan ke <strong>seluruh laporan</strong> sekali gus.</p></div>
+              <div class="panel"><h3>Branding rasmi</h3><p>Import fail theme <strong>JSON</strong> (dataColors, background, foreground, fontSize) via Browse for themes. Boleh jana dari logo guna penjana seperti themes.powerbi.tips.</p></div>
+            </div>
+            <div class="callout">Faedah: rupa seragam, jimat masa, identiti rasmi. NRES: warna korporat + Accessible theme supaya agensi (JAS/JPSM/…) mudah dibeza.</div>
+          </div>
+          <div class="footer"><span>Report theme</span><span>Sumber: Bab 7 · Using a theme</span></div>
+        </div>
+      </section>
+
       <section>
         <div class="slide-frame">
           <div class="eyebrow">Langkah 7</div>
@@ -718,6 +835,45 @@ Perubahan Bulanan % =
             <div class="callout">Matlamat: satu halaman kemas yang menjawab soalan utama pengurusan NRES sekali pandang.</div>
           </div>
           <div class="footer"><span>Dashboard</span><span>Bersih, fokus, mudah ditapis</span></div>
+        </div>
+      </section>
+
+      <!-- H2l. Filter scope -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Penapis · skop</div>
+          <div class="center-stack tight">
+            <h2>Skop penapis: visual, page, report.</h2>
+            <div class="grid three">
+              <div class="panel"><h3>Visual</h3><p>Filters on this visual — kesan satu visual sahaja.</p></div>
+              <div class="panel"><h3>Page</h3><p>Filters on this page — kesan semua visual halaman itu.</p></div>
+              <div class="panel"><h3>Report</h3><p>Filters on all pages — ditetapkan sekali, kesan <strong>semua halaman</strong>.</p></div>
+            </div>
+            <div class="callout"><strong>Slicer vs Filters pane:</strong> slicer ialah kawalan di atas kanvas untuk pengguna; Filters pane untuk penulis tetapkan skop. NRES: report-level filter papar hanya aduan tahun semasa merentas semua halaman.</div>
+          </div>
+          <div class="footer"><span>Filter scope</span><span>Sumber: Bab 7 · Adding report filters</span></div>
+        </div>
+      </section>
+
+      <!-- H2m. Pre-publish checklist -->
+      <section>
+        <div class="slide-frame">
+          <div class="eyebrow">Sebelum terbit</div>
+          <div class="center-stack tight">
+            <h2>Senarai semak sebelum publish.</h2>
+            <div class="grid two">
+              <div class="panel"><ul>
+                <li><strong>Mobile layout</strong> (View &gt; Mobile layout) — susun semula untuk telefon; boleh skrol, tak ubah desktop.</li>
+                <li><strong>Hide</strong> halaman pembantu (Template) &amp; jadual/lajur/measure pembantu (Hide in report view).</li>
+              </ul></div>
+              <div class="panel"><ul>
+                <li><strong>Lock objects</strong> + matikan Gridlines/Snap selepas siap.</li>
+                <li><strong>Uji</strong> seperti pengguna sebenar — klik slicer, drill, Reset — sebelum publish.</li>
+              </ul></div>
+            </div>
+            <div class="callout">Penyediaan awal (theme, page template, sync slicers, report filters) menjadikan langkah akhir ini pantas. NRES: sorok jadual Kalendar; sedia mobile view untuk pegawai di lapangan.</div>
+          </div>
+          <div class="footer"><span>Finishing up</span><span>Sumber: Bab 7 · Mobile, hide, lock &amp; test</span></div>
         </div>
       </section>
 
