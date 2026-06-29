@@ -338,8 +338,10 @@ Ulang untuk ketiga-tiga hubungan:
 - **Cross-filter direction:** *Single* — penapis mengalir dari dimensi ke fakta.
 
 > **Konsep penting — Cardinality & arah penapis:**
+> - **Cardinality** ada 4 jenis: *One-to-one*, *One-to-many*, *Many-to-one (\*:1)*, dan *Many-to-many*. Garisan tunjuk **1** di sisi unik (dimensi) dan **\*** di sisi banyak (fakta). Skema bintang sentiasa guna One-to-many / Many-to-one.
 > - **Many-to-one (\*:1)** bermakna banyak baris `aduan` boleh berkongsi satu `agensi`.
-> - **Cross-filter Single** bermakna apabila anda pilih satu agensi, ia menapis jadual `aduan` — tetapi tidak sebaliknya. Inilah tingkah laku biasa untuk skema bintang.
+> - **Cross-filter direction:** *Single* (penapis mengalir satu arah, dimensi → fakta) atau *Both* (dua arah — guna berhati-hati). Untuk skema bintang, kekalkan **Single**.
+> - Hanya **satu** hubungan boleh **active** (garisan pejal) antara dua jadual; yang lain *inactive* (garisan putus-putus). Cipta/edit melalui seret-lepas atau **Home > Manage relationships** (ada **Autodetect**).
 
 ---
 
@@ -351,6 +353,13 @@ Kembali ke **Report view**. Mari bina 4 visual.
 
 1. Pada anak tetingkap **Visualizations** (kanan), klik ikon jenis carta yang dikehendaki — satu visual kosong muncul di kanvas.
 2. Daripada anak tetingkap **Data/Fields**, seret medan ke dalam slot yang sesuai (Axis, Values, Legend).
+
+> **Konsep — anak tetingkap Visualizations ada 3 tab:**
+> - **Build** — pilih jenis visual & seret medan ke slot (X-axis, Y-axis, Legend, Values). Tukar agregasi medan (Sum / Count / Average) guna anak panah turun pada medan.
+> - **Format** — ubah rupa: Title, Data labels, font, warna (ada sub-tab *Visual* & *General*).
+> - **Analytics** — tambah garisan analitik seperti *Average line* (untuk visual tertentu sahaja, cth column/line chart).
+>
+> Anda boleh **tukar jenis visual** bila-bila masa dengan klik ikon visual lain — medan kekal terpasang.
 
 ### 5.1 Card — Jumlah Aduan
 
@@ -421,12 +430,13 @@ Projek Power BI disimpan sebagai satu fail **`.pbix`** yang mengandungi data, mo
 
 Tahniah! Anda telah berjaya:
 
-- [x] Memasang Power BI Desktop dan mengenali 3 paparan (Report, Table, Model)
+- [x] Memasang Power BI Desktop dan mengenali antara muka (Header, Ribbon, Formula Bar, Canvas, Panes) serta 3 paparan (Report, Table, Model)
+- [x] Memahami **anatomi BI** (Domain → Data → Model → Analysis → Visualization) dan Power BI sebagai **koleksi komponen**
 - [x] Memuat 4 fail CSV melalui **Get Data**
-- [x] Membersihkan data `aduan` dengan **Power Query** (tajuk, jenis, trim, ganti null, lajur tersuai)
+- [x] Membersihkan data `aduan` dengan **Power Query** (tajuk, jenis, trim, ganti null, lajur tersuai) dan memahami **Applied Steps**
 - [x] Menyemak kualiti data dengan **alat profil data** (Column quality / distribution / profile)
-- [x] Memahami dan menyemak kod **M**
-- [x] Membina model **skema bintang** dengan 3 hubungan satu-ke-banyak
+- [x] Memahami dan menyemak kod **M**; sedar konsep **Merge / Append / Unpivot**
+- [x] Membina model **skema bintang** dengan 3 hubungan satu-ke-banyak (cardinality & cross-filter direction)
 - [x] Membina 4 visual asas (Card, Bar, Donut, Column)
 - [x] Menambah **Slicer** dan memahami penapisan silang
 - [x] Menyimpan projek sebagai fail `.pbix`

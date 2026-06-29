@@ -15,6 +15,9 @@ Lab ini mengukuhkan kemahiran memuat data, membersihkan data dengan Power Query,
 
 ## Latihan
 
+### Latihan 0 — Orientasi antara muka
+Sebelum muat data, kenal pasti bahagian utama: **Header** (Save, nama fail), **Ribbon**, **Formula Bar**, **Kanvas**, anak tetingkap **Visualizations** & **Data**, dan **3 ikon paparan** (Report / Table / Model) di tepi kiri. Tukar antara ketiga-tiga paparan sekali untuk biasakan diri.
+
 ### Latihan 1 — Muat keempat-empat fail
 Guna **Get Data > Text/CSV** untuk import `aduan.csv`, `agensi.csv`, `negeri.csv`, dan `kategori.csv`. Sahkan kesemuanya muncul dalam anak tetingkap **Data**.
 
@@ -26,6 +29,7 @@ Dalam **Transform data** (Power Query):
 - Gantikan nilai kosong `amaun_kompaun` dengan 0.
 - Tambah lajur tersuai `tempoh_hari` (rujuk `power-query.m`).
 - Hidupkan **Data Profiling** (View > Column quality, Column distribution, Column profile) dan sahkan: `amaun_kompaun` 0% Empty, `negeri` 16 nilai distinct, lajur tarikh 0% Error.
+- Lihat senarai **Applied Steps** (kanan): klik langkah berbeza untuk lihat data berubah, kemudian buka **Advanced Editor** untuk tengok kod **M**.
 
 ### Latihan 3 — Bina hubungan
 Dalam paparan **Model**, cipta hubungan:
@@ -33,7 +37,7 @@ Dalam paparan **Model**, cipta hubungan:
 - `aduan[negeri]` → `negeri[negeri]`
 - `aduan[kategori]` → `kategori[kategori]`
 
-Pastikan semua **satu-ke-banyak** (1 → *).
+Pastikan semua **satu-ke-banyak** (1 → *). Buka **Manage relationships** (atau klik dua kali garisan) dan sahkan **Cardinality = Many to one (\*:1)** dan **Cross-filter direction = Single**.
 
 ### Latihan 4 — Visual pertama
 Bina visual pada kanvas laporan:
@@ -42,13 +46,17 @@ Bina visual pada kanvas laporan:
 - **Donut**: aduan mengikut `status`
 - **Column chart**: aduan mengikut `kategori`
 
+Cuba ketiga-tiga tab anak tetingkap **Visualizations**: **Build** (seret medan), **Format** (hidupkan Title & Data labels), dan **Analytics** (tambah *Average line* pada column chart).
+
 ### Latihan 5 — Cabaran
 Tambah **Slicer** untuk `zon` (dari jadual `negeri`) dan perhatikan semua visual menapis serentak apabila anda pilih satu zon.
 
 ## Semakan kendiri
 
+- [ ] Boleh kenal pasti antara muka & bertukar antara 3 paparan (Report / Table / Model)
 - [ ] Keempat-empat jadual dimuat dan jenis data betul
 - [ ] Alat profil data disemak (amaun_kompaun 0% Empty, negeri 16 distinct, tarikh 0% Error)
+- [ ] Applied Steps difahami (klik langkah berbeza; kod M dilihat dalam Advanced Editor)
 - [ ] Lajur `tempoh_hari` wujud dan menunjukkan nilai untuk kes selesai
-- [ ] Tiga hubungan dicipta dalam paparan Model (skema bintang)
+- [ ] Tiga hubungan dicipta dengan Cardinality \*:1 dan Cross-filter Single
 - [ ] Visual berfungsi dan menapis melalui slicer
