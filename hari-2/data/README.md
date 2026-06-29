@@ -1,61 +1,25 @@
-# Data Contoh — Dashboard Aduan Alam Sekitar NRES
+# Data Hari 2 — Sasaran Prestasi
 
-Empat fail CSV ini ialah punca data untuk dashboard yang anda bina sepanjang kursus. Strukturnya ialah **skema bintang (star schema)**: satu jadual fakta (`aduan`) dikelilingi jadual dimensi (`agensi`, `negeri`, `kategori`).
+Hari 2 **menyambung** fail `.pbix` yang anda bina pada Hari 1 — jadi jadual teras (`aduan`, `agensi`, `negeri`, `kategori`) **sudah dimuat** dalam model dan tidak perlu diimport semula. Kamus data penuh untuk keempat-empat jadual itu ada dalam [`../../hari-1/data/README.md`](../../hari-1/data/README.md).
 
-Data meliputi aduan alam sekitar yang dikendalikan oleh pelbagai agensi di bawah **Kementerian Sumber Asli dan Kelestarian Alam (NRES)**.
+Folder ini hanya mengandungi **satu fail baharu** yang diperkenalkan pada Hari 2.
 
-## `aduan.csv` — Jadual Fakta (≈480 baris)
+## `sasaran.csv` — Jadual Sasaran (5 baris)
 
-Setiap baris ialah satu aduan/kes alam sekitar.
-
-| Lajur | Jenis | Penerangan |
-|-------|-------|------------|
-| `no_aduan` | Teks | Nombor rujukan unik, cth: `NRES-2025-0001` |
-| `tarikh_terima` | Tarikh | Tarikh aduan diterima |
-| `tarikh_selesai` | Tarikh | Tarikh kes diselesaikan (kosong jika belum) |
-| `kategori` | Teks | Jenis kes alam sekitar (lihat `kategori.csv`) |
-| `agensi` | Teks | Agensi NRES yang mengendalikan kes (lihat `agensi.csv`) |
-| `negeri` | Teks | Negeri lokasi kes (lihat `negeri.csv`) |
-| `status` | Teks | Baru / Dalam Siasatan / Selesai / Ditutup |
-| `tindakan` | Teks | Tindakan diambil: Amaran / Kompaun / Pendakwaan / Tiada |
-| `amaun_kompaun` | Nombor (RM) | Amaun kompaun dikenakan (0 jika tiada) |
-
-## `agensi.csv` — Jadual Dimensi (5 baris)
-
-| Lajur | Jenis | Penerangan |
-|-------|-------|------------|
-| `agensi` | Teks | Nama penuh agensi (kunci hubungan) |
-| `singkatan` | Teks | Singkatan, cth: JAS, JPSM, PERHILITAN, JMG, JPS |
-| `fokus` | Teks | Bidang tanggungjawab agensi |
-
-## `negeri.csv` — Jadual Dimensi (16 baris)
-
-| Lajur | Jenis | Penerangan |
-|-------|-------|------------|
-| `negeri` | Teks | Nama negeri (kunci hubungan) |
-| `zon` | Teks | Zon wilayah: Utara, Tengah, Selatan, Timur, Borneo |
-| `populasi` | Nombor | Anggaran penduduk (untuk kiraan per kapita) |
-
-## `kategori.csv` — Jadual Dimensi (8 baris)
-
-| Lajur | Jenis | Penerangan |
-|-------|-------|------------|
-| `kategori` | Teks | Nama kategori kes (kunci hubungan) |
-| `agensi` | Teks | Agensi yang bertanggungjawab bagi kategori tersebut |
-| `keterangan` | Teks | Penerangan ringkas kategori |
-
-## `sasaran.csv` — Jadual Sasaran (5 baris, Hari 2)
-
-Sasaran prestasi setiap agensi — digunakan untuk **conditional formatting** & kes "prestasi vs sasaran" pada Hari 2.
+Sasaran prestasi setiap agensi — digunakan untuk **conditional formatting** (heat-map matrix) & kes "prestasi vs sasaran".
 
 | Lajur | Jenis | Penerangan |
 |-------|-------|------------|
 | `agensi` | Teks | Nama penuh agensi (kunci padanan) |
 | `sasaran_selesai` | Nombor (0–1) | Sasaran peratus kes selesai, cth `0.70` = 70% |
 
-> **Nota:** Dimuat sebagai jadual **disconnected** (tiada hubungan) — sukatan `Sasaran % Selesai` mencapainya dengan `LOOKUPVALUE`. Lihat README Hari 2, Langkah 6 › Conditional formatting.
+> **Nota:** Dimuat sebagai jadual **disconnected** (tiada hubungan dalam model). Sukatan `Sasaran % Selesai` mencapainya dengan `LOOKUPVALUE`. Lihat README Hari 2, Langkah 6 › Conditional formatting.
 
-## Hubungan dalam model
+## Jadual `Kalendar` — dicipta dengan DAX (bukan CSV)
+
+Hari 2 juga menambah jadual **`Kalendar`**, tetapi ia **tidak datang daripada CSV** — ia dijana dengan DAX `CALENDAR()` (rujuk `../snippets/calculated-columns.dax`) dan dihubungkan `aduan[tarikh_terima]` → `Kalendar[Date]`.
+
+## Model selepas Hari 2
 
 ```
    agensi (1) ──< (banyak) aduan (banyak) >── (1) negeri
@@ -63,7 +27,9 @@ Sasaran prestasi setiap agensi — digunakan untuk **conditional formatting** & 
                   (1) kategori   tarikh_terima
                                        │
                                        v
-                            Kalendar (dicipta dengan DAX pada Hari 2)
+                            Kalendar (DAX, Hari 2)
+
+   sasaran  ·  jadual disconnected (LOOKUPVALUE, tiada hubungan)
 ```
 
 > **Nota:** Data ini dijana untuk tujuan latihan sahaja dan **bukan** data rasmi NRES. Inspirasi domain: portal rasmi [nres.gov.my](https://www.nres.gov.my/ms-my/Pages/default.aspx).
