@@ -131,10 +131,10 @@ Selepas selesai, anda sepatutnya nampak **4 jadual** dalam anak tetingkap **Data
 
 Buka **Power Query Editor** (jika belum terbuka): **Home > Transform data**. Pilih query **`aduan`** di anak tetingkap **Queries** (kiri).
 
-> **Awareness — gabung data (tidak digunakan dalam bengkel ini, data kita sudah kemas):**
+> **Konsep — gabung & bentuk data** (data utama kita sudah kemas, tetapi teknik ini penting untuk data dunia sebenar — **latihan amali penuh di [Langkah 2B](#langkah-2b-pilihan-gabung--bentuk-data--merge-append--unpivot)**):
 > - **Merge** = cantum dua query ikut lajur sepadan (seperti SQL *JOIN*) → menambah **lajur**.
 > - **Append** = tindan baris dua/lebih query → menambah **baris** (cth satukan fail aduan Jan + Feb + Mac menjadi satu jadual `aduan`).
-> - **Unpivot Columns** = tukar data "wide" (satu lajur per bulan) kepada format panjang (lajur *Attribute* + *Value*) supaya mudah dijumlah & ditapis.
+> - **Unpivot Columns** = tukar data "wide" (satu lajur per kategori/bulan) kepada format panjang (lajur *Attribute* + *Value*) supaya mudah dijumlah & ditapis.
 > - Query perantara boleh dimatikan **Enable load** supaya ia tidak menjadi jadual berasingan dalam model.
 
 ### 2.1 Naikkan tajuk (Promote Headers)
@@ -274,6 +274,85 @@ Perkara untuk disemak:
 ### 2.8 Close & Apply
 
 Setelah selesai, klik **Home > Close & Apply** (sebelah kiri Ribbon). Power BI akan memuatkan data yang telah dibersihkan ke dalam model dan kembali ke Report view.
+
+---
+
+## Langkah 2B (Pilihan): Gabung & Bentuk Data — Merge, Append & Unpivot
+
+> **Bila guna bahagian ini?** Data teras kursus (`aduan.csv` + 3 dimensi) sudah kemas, jadi bahagian ini **tidak wajib** untuk membina dashboard utama. Tetapi dalam dunia sebenar, data jarang sekemas itu — ia datang **berpecah** (fail bulanan berasingan), **berselerak** (perlu lookup dari fail lain), atau **sudah diringkaskan** (pivot table mengikut tahun/kategori). Tiga teknik dalam slaid menangani ketiga-tiga keadaan. Fail latihan disediakan dalam folder `data/`; kod M rujukan dalam [`snippets/power-query-gabung.m`](./snippets/power-query-gabung.m).
+
+| Keadaan data sebenar | Teknik | Kesan |
+|----------------------|--------|-------|
+| Fail bulanan berasingan (Julai, Ogos, …) | **Append** | Tambah **baris** |
+| Maklumat tambahan dalam fail lain (pegawai, sasaran) | **Merge** | Tambah **lajur** |
+| Sudah diringkaskan: lajur = kategori, nilai = jumlah | **Unpivot** | Bentuk semula → **long** |
+
+### 2B.1 Append — satukan fail aduan bulanan (tambah BARIS)
+
+Bayangkan setiap bulan satu eksport baharu tiba: `aduan_2026_07.csv`, `aduan_2026_08.csv`. Skema sama (9 lajur), cuma baris berbeza. **Append** menindan baris menjadi satu jadual.
+
+1. **Get Data > Text/CSV** → import `aduan_2026_07.csv` (klik **Transform Data**). Ulang untuk `aduan_2026_08.csv`. Naikkan tajuk jika perlu.
+2. Pada **Home > Append Queries > Append Queries as New**.
+3. Pilih **Three or more tables** jika ada banyak, atau dua jadual bulanan tadi, klik **OK**.
+4. Hasilnya satu jadual bertindan. Namakan semula `aduan_gabung`.
+
+> **Konsep:** Append = **UNION baris** (seperti menyusun kertas). Nama lajur mesti sepadan; lajur yang tiada padanan jadi `null`. **Petua pro:** guna penyambung **Folder** (Get Data > Folder) untuk auto-append **semua** fail dalam satu folder — sesuai untuk eksport bulanan berterusan tanpa edit query setiap bulan.
+
+### 2B.2 Merge — bawa maklumat pegawai (tambah LAJUR)
+
+Fail `pegawai.csv` menyenaraikan pegawai bertanggungjawab + emel bagi setiap agensi. Kita **Merge** ia ke dalam dimensi `agensi` (memperkaya jadual rujukan — seperti SQL **JOIN**).
+
+1. **Get Data > Text/CSV** → import `pegawai.csv`.
+2. Pilih query **`agensi`** di anak tetingkap Queries → **Home > Merge Queries**.
+3. Pada jadual atas (`agensi`), klik tajuk lajur **`agensi`**. Pada jadual bawah, pilih **`pegawai`** dan klik lajur **`agensi`** juga.
+4. **Join Kind: Left Outer** (kekalkan semua baris agensi). Klik **OK**.
+5. Satu lajur baharu **`Pegawai`** (jadual bersarang) muncul. Klik ikon **Expand (⇔)** di tajuknya → tanda `pegawai` dan `emel` → **OK**.
+6. Jadual `agensi` kini ada lajur `pegawai` & `emel`.
+
+> **Konsep — 6 Join Kind:** *Left/Right/Full Outer*, *Inner*, *Left/Right Anti*. **Left Outer** paling biasa (kekal semua baris kiri, isi padanan kanan). **Inner** = baris yang ada di kedua-dua sahaja. **Anti** = cari baris yang **tiada** padanan (berguna semak data hilang).
+>
+> **Nota model:** Untuk hubungkan **fakta ↔ dimensi** (cth `aduan` ↔ `agensi`), kita guna **relationship** (Langkah 4), **bukan** Merge. Merge sesuai untuk **mencantum dua fail yang menerangkan entiti sama** (di sini: dua fail tentang agensi) menjadi satu dimensi yang lebih lengkap.
+
+### 2B.3 Unpivot — bentuk semula data ringkasan "wide" kepada "long"
+
+Selalunya data sampai dalam bentuk **pivot table** yang sudah diringkaskan — `aduan_ringkasan.csv` ialah kiraan aduan **mengikut tahun (baris) × kategori (lajur)**:
+
+```
+Tahun | Pencemaran Air | Pencemaran Udara | ... | Hakisan Pantai & Banjir
+2022  | 38             | 61               | ... | 72
+2023  | 44             | 70               | ... | 85
+```
+
+Power BI mahukan bentuk **panjang (long/tidy)** — satu baris per Tahun × kategori:
+
+```
+Tahun | kategori          | bilangan
+2022  | Pencemaran Air    | 38
+2022  | Pencemaran Udara  | 61
+...
+```
+
+**Langkah:**
+
+1. **Get Data > Text/CSV** → import `aduan_ringkasan.csv` (klik **Transform Data**). Naikkan tajuk.
+2. Klik **satu kali** pada tajuk lajur **`Tahun`** untuk memilihnya.
+3. **Klik kanan `Tahun` > Unpivot Other Columns.** *(Pilih "Other Columns", bukan "Unpivot Columns" — supaya kategori baharu tahun depan ikut serta automatik.)*
+4. Namakan semula lajur baharu: `Attribute` → **`kategori`**, `Value` → **`bilangan`**.
+5. Tetapkan jenis: `Tahun` Whole Number, `kategori` Text, `bilangan` Whole Number → **Close & Apply**.
+
+> **⚠️ Penting — agregasi bersifat sehala (lossy):** Unpivot memulihkan bentuk **tidy long**, **bukan** baris transaksi asal. Apabila data sudah dijumlahkan (`38` aduan), anda **tidak boleh** memulihkan 38 rekod individu (tarikh, negeri, kompaun masing-masing sudah hilang). Untuk data peringkat transaksi sebenar, perlu kembali ke **sistem sumber**. Kerana `bilangan` ialah **jumlah terkumpul**, agregat dengan **Sum** (bukan Count) dalam visual.
+
+> **Lanjutan — tajuk berbilang baris:** Eksport kerajaan kadangkala ada **tajuk bergabung 2 baris** (Tahun di atas Kategori). Sebelum unpivot: **Transpose** → **Fill Down** sel bergabung → **Merge Columns** dua baris tajuk → **Transpose** semula → barulah **Unpivot**.
+
+### 2B.4 Enable Load — query perantara (staging)
+
+Selepas Append/Merge, query sumber asal (cth jadual bulanan) selalunya tak perlu wujud sebagai jadual berasingan dalam model.
+
+1. Klik kanan query perantara di anak tetingkap **Queries**.
+2. **Nyahtanda Enable load** — query masih berjalan sebagai *staging* (sumber kepada `aduan_gabung`) tetapi tidak menjadi jadual dalam model semantik.
+3. Pilihan **Include in report refresh** mengawal sama ada ia disegar semula.
+
+> **Faedah:** model lebih kemas (hanya jadual yang benar-benar diperlukan), saiz lebih kecil, dan senarai Fields tidak berselerak.
 
 ---
 

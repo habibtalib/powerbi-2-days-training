@@ -7,6 +7,15 @@ Lab ini mengukuhkan kemahiran memuat data, membersihkan data dengan Power Query,
 | Fail | Kegunaan |
 |------|----------|
 | `power-query.m` | Rujukan kod M untuk transformasi jadual `aduan` |
+| `power-query-gabung.m` | Rujukan kod M untuk **Append**, **Merge** & **Unpivot** (Latihan 6–8) |
+
+Fail data tambahan dalam folder `data/` untuk Latihan 6–8:
+
+| Fail | Kegunaan |
+|------|----------|
+| `aduan_2026_07.csv`, `aduan_2026_08.csv` | Eksport bulanan untuk latihan **Append** (tambah baris) |
+| `pegawai.csv` | Lookup pegawai/emel per agensi untuk latihan **Merge** (tambah lajur) |
+| `aduan_ringkasan.csv` | Ringkasan tahunan "wide" (lajur = kategori) untuk latihan **Unpivot** |
 
 ## Persediaan
 
@@ -51,6 +60,18 @@ Cuba ketiga-tiga tab anak tetingkap **Visualizations**: **Build** (seret medan),
 ### Latihan 5 — Cabaran
 Tambah **Slicer** untuk `zon` (dari jadual `negeri`) dan perhatikan semua visual menapis serentak apabila anda pilih satu zon.
 
+### Latihan 6 — Append (satukan fail bulanan)
+Import `aduan_2026_07.csv` dan `aduan_2026_08.csv` (Get Data > Text/CSV). Guna **Home > Append Queries as New** untuk tindan kedua-duanya menjadi satu jadual `aduan_gabung`. Sahkan jumlah baris = 8 + 8 = **16**. Rujuk `power-query-gabung.m` (blok 1).
+> *Renungan:* nama lajur kedua-dua fail mesti sama supaya append kemas. Penyambung **Folder** boleh auto-append semua fail dalam satu folder.
+
+### Latihan 7 — Merge (bawa lajur pegawai)
+Import `pegawai.csv`. Pilih query `agensi` → **Home > Merge Queries**, padan ikut lajur `agensi`, **Join Kind = Left Outer**. **Expand** lajur `pegawai` dan `emel`. Sahkan jadual `agensi` kini ada 5 baris dengan pegawai & emel. Rujuk `power-query-gabung.m` (blok 2).
+> *Cuba:* tukar Join Kind kepada **Inner** dan **Left Anti** — perhatikan perbezaan baris yang terhasil.
+
+### Latihan 8 — Unpivot (data ringkasan → long)
+Import `aduan_ringkasan.csv` (format "wide": lajur = kategori, nilai = jumlah). Pilih lajur `Tahun` → klik kanan → **Unpivot Other Columns**. Namakan `Attribute` → `kategori`, `Value` → `bilangan`. Sahkan hasil = 3 tahun × 8 kategori = **24 baris**. Rujuk `power-query-gabung.m` (blok 3).
+> *Faham:* Unpivot memberi bentuk **long** yang kemas, **bukan** baris transaksi asal — jumlah yang sudah diringkas tidak boleh dipecahkan semula. Kerana `bilangan` ialah jumlah, agregat dengan **Sum** dalam visual.
+
 ## Semakan kendiri
 
 - [ ] Boleh kenal pasti antara muka & bertukar antara 3 paparan (Report / Table / Model)
@@ -60,6 +81,9 @@ Tambah **Slicer** untuk `zon` (dari jadual `negeri`) dan perhatikan semua visual
 - [ ] Lajur `tempoh_hari` wujud dan menunjukkan nilai untuk kes selesai
 - [ ] Tiga hubungan dicipta dengan Cardinality \*:1 dan Cross-filter Single
 - [ ] Visual berfungsi dan menapis melalui slicer
+- [ ] **Append** menghasilkan `aduan_gabung` (16 baris) daripada dua fail bulanan
+- [ ] **Merge** membawa lajur `pegawai` & `emel` ke dalam `agensi` (Left Outer + Expand)
+- [ ] **Unpivot** menukar `aduan_ringkasan` "wide" kepada 24 baris `Tahun`/`kategori`/`bilangan`
 
 ---
 

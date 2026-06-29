@@ -55,4 +55,30 @@ Setiap baris ialah satu aduan/kes alam sekitar.
                             Kalendar (dicipta dengan DAX pada Hari 2)
 ```
 
+## Fail tambahan untuk latihan gabung & bentuk data (Langkah 2B)
+
+Fail ini **tidak** sebahagian model teras — ia untuk melatih teknik **Append**, **Merge**, dan **Unpivot** (Power Query) seperti dalam README Hari 1, Langkah 2B.
+
+### `aduan_2026_07.csv` & `aduan_2026_08.csv` — untuk Append (8 baris setiap satu)
+
+Eksport bulanan (Julai & Ogos 2026) dengan **skema sama** seperti `aduan.csv` (9 lajur). Latih **Append** untuk menindan baris menjadi satu jadual. Semua nilai `agensi`, `negeri`, `kategori` sepadan dengan jadual dimensi supaya hubungan kekal sah.
+
+### `pegawai.csv` — untuk Merge (5 baris)
+
+| Lajur | Jenis | Penerangan |
+|-------|-------|------------|
+| `agensi` | Teks | Nama penuh agensi (kunci padanan untuk Merge) |
+| `pegawai` | Teks | Pegawai bertanggungjawab |
+| `emel` | Teks | Emel pegawai (ilustrasi) |
+
+Latih **Merge** untuk membawa lajur `pegawai` & `emel` ke dalam dimensi `agensi` (Left Outer + Expand).
+
+### `aduan_ringkasan.csv` — untuk Unpivot (3 baris × 8 lajur kategori)
+
+Ringkasan tahunan **pra-agregat** dalam format "wide": baris = `Tahun` (2022–2024), lajur = 8 kategori, nilai = **jumlah** aduan. Latih **Unpivot Other Columns** untuk bentuk semula kepada `Tahun` | `kategori` | `bilangan` (24 baris).
+
+> **Nota:** Kerana data ini sudah diringkaskan, baris transaksi asal **tidak boleh** dipulihkan — agregasi bersifat sehala. Lihat README Langkah 2B.3.
+
+---
+
 > **Nota:** Data ini dijana untuk tujuan latihan sahaja dan **bukan** data rasmi NRES. Inspirasi domain: portal rasmi [nres.gov.my](https://www.nres.gov.my/ms-my/Pages/default.aspx).
