@@ -414,6 +414,119 @@ Klik semula zon yang dipilih untuk membatalkan penapis.
 
 ---
 
+## Latihan Tambahan — Contoh Kes Penggunaan (Use Cases)
+
+Bahagian ini mengaitkan kemahiran Hari 1 dengan **soalan pengurusan sebenar** NRES. Kebanyakan kes hanya menggunakan alat Hari 1 — **Power Query**, **model**, **visual asas** (Card, Bar, Donut, Column, Scatter), **Slicer**, dan **Filters pane**. Beberapa kes ditanda **🔜 Pratonton Hari 2** kerana ia menggunakan teknik (Map, Matrix, conditional formatting, Top N, Sort by Column) yang kita dalami sepenuhnya pada Hari 2 — anda boleh cuba sekarang sebagai penambah selera.
+
+> **Petua kerja:**
+> - Untuk menapis **satu** visual tanpa slicer, seret medan ke **Filters on this visual** dalam anak tetingkap **Filters**.
+> - Untuk menukar cara nombor dikira (**Count / Sum / Average**), klik anak panah turun pada medan di dalam slot visual.
+> - Anda belum perlu menulis **measure DAX** di sini — semua pengiraan guna agregasi terbina pada medan. Sukatan DAX bermula Hari 2.
+
+### Kes 1 — Beban kerja & status setiap agensi
+**Soalan pengurusan:** *Agensi mana paling banyak aduan, dan berapa banyak yang masih belum selesai?*
+
+1. Bina **Stacked bar chart**.
+2. **Y-axis:** `agensi[agensi]` · **X-axis:** `aduan[no_aduan]` (Count) · **Legend:** `aduan[status]`.
+3. Perhatikan komposisi status (Baru / Dalam Siasatan / Selesai / Ditutup) bagi setiap agensi.
+
+**Hasil:** satu carta menunjukkan beban kerja **dan** kemajuan setiap agensi sekali pandang.
+
+### Kes 2 — Kes tertunggak (backlog)
+**Soalan pengurusan:** *Berapa banyak aduan yang masih belum selesai sekarang?*
+
+1. Bina visual **Card** · seret `aduan[no_aduan]` (Count).
+2. Pada **Filters on this visual**, seret `aduan[status]` dan pilih **Baru** dan **Dalam Siasatan** sahaja.
+3. (Pilihan) Tambah **Card** kedua untuk kes **Selesai** sebagai perbandingan.
+
+**Hasil:** KPI ringkas bilangan kes tertunggak — sesuai diletak di bahagian atas dashboard.
+
+### Kes 3 — Negeri "hotspot"
+**Soalan pengurusan:** *Negeri mana mencatat aduan paling tinggi?*
+
+1. Bina **Clustered column chart** · **X-axis:** `negeri[negeri]` · **Y-axis:** `aduan[no_aduan]` (Count).
+2. Klik **... (More options) > Sort axis** dan susun menurun (descending).
+3. 🔜 *Pratonton Hari 2:* pada **Filters pane**, tukar Filter type `negeri` kepada **Top N** dan tetapkan **Top 5 By value = Count of no_aduan**.
+
+**Hasil:** ranking negeri dengan aduan tertinggi — fokus untuk penguatkuasaan.
+
+### Kes 4 — Purata tempoh penyelesaian
+**Soalan pengurusan:** *Agensi mana paling pantas/lambat menyelesaikan kes?*
+
+1. Bina **Clustered bar chart** · **Y-axis:** `agensi[agensi]` · **X-axis:** `aduan[tempoh_hari]`.
+2. Klik anak panah turun pada `tempoh_hari` dalam slot dan tukar agregasi kepada **Average**.
+3. Pada tab **Analytics** (anak tetingkap Visualizations), tambah **Average line** sebagai penanda purata keseluruhan.
+
+**Hasil:** perbandingan purata hari penyelesaian antara agensi (kes belum selesai diabaikan kerana `tempoh_hari` kosong).
+
+### Kes 5 — Jumlah kompaun mengikut kategori
+**Soalan pengurusan:** *Kategori kes mana menyumbang nilai kompaun (RM) tertinggi?*
+
+1. Bina **Clustered column chart** · **X-axis:** `kategori[kategori]` · **Y-axis:** `aduan[amaun_kompaun]`.
+2. Pastikan agregasi `amaun_kompaun` ialah **Sum**.
+3. Pada **Format > Data labels**, hidupkan label; format medan sebagai **Currency (RM)** dalam Column tools jika perlu.
+
+**Hasil:** carta nilai kompaun terkumpul setiap kategori — asas analisis penguatkuasaan Hari 2.
+
+### Kes 6 — Taburan tindakan penguatkuasaan
+**Soalan pengurusan:** *Berapa kerap setiap jenis tindakan diambil (Amaran / Kompaun / Pendakwaan / Tiada)?*
+
+1. Bina **Donut chart** · **Legend:** `aduan[tindakan]` · **Values:** `aduan[no_aduan]` (Count).
+2. (Pilihan) Tambah **Slicer** `agensi[agensi]` untuk bandingkan corak tindakan antara agensi.
+
+**Hasil:** gambaran keseluruhan campuran tindakan penguatkuasaan, dan bagaimana ia berbeza ikut agensi.
+
+### Kes 7 — Beban mengikut zon
+**Soalan pengurusan:** *Wilayah/zon mana paling banyak aduan?*
+
+1. Bina **Clustered column chart** · **X-axis:** `negeri[zon]` · **Y-axis:** `aduan[no_aduan]` (Count).
+2. Tambah **Slicer** `kategori[kategori]` untuk lihat zon mana mendominasi setiap kategori kes.
+
+**Hasil:** pandangan agregat peringkat zon (Utara, Tengah, Selatan, Timur, Borneo) — guna atribut dimensi `zon`, bukan negeri individu.
+
+### Kes 8 — Aduan berbanding populasi negeri (Scatter)
+**Soalan pengurusan:** *Negeri mana mencatat aduan tinggi **berbanding saiz populasinya**?*
+
+1. Bina **Scatter chart**.
+2. **X-axis:** `negeri[populasi]` (Sum) · **Y-axis:** `aduan[no_aduan]` (Count) · **Values/Details:** `negeri[negeri]`.
+3. Setiap titik = satu negeri. Cari negeri yang **tinggi pada paksi-Y tetapi rendah pada paksi-X** — banyak aduan walaupun populasi kecil.
+
+**Hasil:** analisis kadar relatif — menonjolkan negeri dengan beban aduan luar biasa berbanding populasi.
+
+### Kes 9 — Heatmap aduan mengikut negeri (peta) &nbsp;🔜 *Pratonton Hari 2*
+**Soalan pengurusan:** *Di mana tumpuan aduan secara geografi merentas Malaysia?*
+
+1. **Tetapkan kategori data dahulu:** pilih jadual `negeri`, klik lajur `negeri`, kemudian **Column tools > Data category > State or Province**. Ini membantu Power BI memetakan nama negeri dengan betul.
+2. Bina visual **Map** (peta gelembung) — **Location:** `negeri[negeri]` · **Bubble size:** `aduan[no_aduan]` (Count).
+3. Untuk kesan "heatmap" sebenar, guna **Filled map (choropleth)** dan letak Count pada **Legend > color saturation** — negeri dengan lebih banyak aduan diwarnakan lebih gelap.
+
+> **Nota skop:** Visual **Map** & pewarnaan tepu (color saturation) diperkenalkan penuh pada **Hari 2**. Jika pemetaan kurang tepat (nama negeri samar), gunakan **Kes 3** (column chart disusun menurun) sebagai pandangan "hotspot" yang boleh dipercayai untuk Hari 1.
+
+**Hasil:** peta tumpuan aduan — versi geografi bagi ranking negeri di Kes 3.
+
+### Kes 10 — Heatmap agensi × kategori (matrix) &nbsp;🔜 *Pratonton Hari 2*
+**Soalan pengurusan:** *Kombinasi agensi dan kategori mana paling kerap?*
+
+1. Bina visual **Matrix** · **Rows:** `agensi[agensi]` · **Columns:** `kategori[kategori]` · **Values:** `aduan[no_aduan]` (Count).
+2. Pada **Format > Cell elements**, hidupkan **Background color** untuk menjadikan setiap sel heat-map (nilai tinggi = warna lebih gelap).
+
+> **Nota skop:** **Matrix** & **conditional formatting** diajar penuh pada Hari 2; di sini ia sekadar pratonton kuasa model bintang yang sama.
+
+**Hasil:** jadual silang berwarna yang menyerlahkan sarang (hotspot) agensi-kategori serta-merta.
+
+### Kes 11 — Papan KPI ringkas (Multi-row card)
+**Soalan pengurusan:** *Boleh saya lihat 3 nombor utama dalam satu kotak?*
+
+1. Bina visual **Multi-row card**.
+2. Seret tiga medan: `aduan[no_aduan]` (Count), `aduan[amaun_kompaun]` (Sum), `aduan[tempoh_hari]` (Average).
+3. Susun di **bahagian atas** halaman sebagai jalur ringkasan.
+
+**Hasil:** tiga KPI teras (Jumlah Aduan · Jumlah Kompaun · Purata Tempoh) dalam satu visual — pendahulu kepada kad KPI berasaskan measure pada Hari 2.
+
+> **🎯 Cabaran gabungan — mini dashboard NRES:** Letak **Kes 11** (jalur KPI) di atas, **Kes 1** dan **Kes 5** di tengah, serta **Kes 3** atau **Kes 9** di bawah pada **satu halaman laporan**. Tambah **Slicer** `negeri[zon]` dan `agensi[singkatan]`, kemudian klik beberapa pilihan untuk lihat semua visual menapis serentak. Inilah versi mini dashboard yang akan kita lengkapkan pada Hari 2.
+
+---
+
 ## Cara Simpan Fail (.pbix)
 
 Projek Power BI disimpan sebagai satu fail **`.pbix`** yang mengandungi data, model, dan laporan.
