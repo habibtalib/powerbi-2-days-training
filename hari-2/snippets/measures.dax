@@ -53,3 +53,36 @@ DIVIDE([Jumlah Aduan] - [Aduan Bulan Lepas], [Aduan Bulan Lepas])
 
 Aduan per 100k Penduduk =
 DIVIDE([Jumlah Aduan], SUM(negeri[populasi])) * 100000
+
+
+// ========== SUKATAN TAMBAHAN (pilihan) — slaid & Latihan Tambahan ==========
+
+// ---------- Sasaran & pemformatan bersyarat (conditional formatting) ----------
+// Perlu fail sasaran.csv dimuat (jadual "sasaran" — TIDAK perlu hubungan;
+// kita guna LOOKUPVALUE supaya ia jadi jadual "disconnected").
+
+// Sasaran % Selesai bagi agensi dalam konteks semasa (default 0.70 jika tiada padanan)
+Sasaran % Selesai =
+LOOKUPVALUE(
+    sasaran[sasaran_selesai],
+    sasaran[agensi], SELECTEDVALUE(aduan[agensi]),
+    0.70
+)
+
+// Measure "field value" pulangkan kod warna hex — guna dalam
+// Format > Cell elements > Background color > fx > Field value
+Warna % Selesai =
+IF([% Selesai] >= [Sasaran % Selesai], "#1a7f4b", "#b42318")
+
+
+// ---------- Purata bergerak 3 bulan (smoothing trend) ----------
+Aduan Purata 3 Bulan =
+CALCULATE(
+    AVERAGEX(VALUES('Kalendar'[Tahun-Bulan]), [Jumlah Aduan]),
+    DATESINPERIOD('Kalendar'[Date], MAX('Kalendar'[Date]), -3, MONTH)
+)
+
+
+// ---------- Ranking negeri (untuk Top-N / jadual berpangkat) ----------
+Pangkat Negeri =
+RANKX(ALL(negeri[negeri]), [Jumlah Aduan], , DESC)

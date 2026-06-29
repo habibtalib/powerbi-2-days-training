@@ -30,6 +30,18 @@ Sebelum mula, fahami dua jenis pengiraan DAX:
 
 > **Petua emas:** Jika ragu, **guna sukatan**. Sukatan lebih cekap dan fleksibel. Guna lajur terkira hanya apabila anda perlu menapis/mengumpul mengikut nilai yang dikira.
 
+### Konsep: Evaluation Context — Row vs Filter
+
+Setiap pengiraan DAX dinilai dalam satu **konteks**. Memahami dua jenis ini menjelaskan kenapa measure & lajur terkira boleh beri jawapan berbeza:
+
+| | **Row context** | **Filter context** |
+|---|---|---|
+| Maksud | "Nampak" satu **baris semasa** | Set baris yang **ditapis** oleh visual, slicer & hubungan |
+| Default untuk | **Lajur terkira** (cth `tarikh_selesai − tarikh_terima` setiap aduan) | **Measure** dalam visual |
+| Fungsi tipikal | Operasi baris demi baris | Agregat (SUM, COUNTROWS) |
+
+> **Kunci faham:** **Measure tiada row context** — ia bermula daripada filter context visual. Sebab itu measure mesti guna fungsi agregat bila merujuk lajur (cth `SUM(aduan[amaun_kompaun])`, bukan `aduan[amaun_kompaun]` sahaja). `CALCULATE` ialah cara utama untuk **mengubah** filter context. *(Sumber: slaid "Evaluation context".)*
+
 ---
 
 ## Langkah 1: Cipta Jadual Kalendar
@@ -190,6 +202,16 @@ Daripada anak tetingkap **Visualizations**, tambah dua visual **Card**:
 - Card 1 → `% Selesai`
 - Card 2 → `Purata Tempoh Selesai` (tukar tajuk kepada "Purata Hari Selesai")
 
+### Quick measures — DAX tanpa menulis DAX (mesra pemula)
+
+Belum yakin menulis DAX? Klik kanan jadual `aduan` > **New quick measure**. Pilih satu pengiraan biasa, seret medan, dan Power BI **menjana formula DAX automatik**.
+
+1. **New quick measure** > Calculation = **Running total**.
+2. Base value = `Jumlah Aduan`, Field = `Kalendar[Date]`.
+3. Klik **OK** — measure baharu terhasil. **Klik measure itu** untuk lihat & belajar formula DAX yang dijana (boleh diubah kemudian).
+
+> **Petua:** Quick measures sangat membantu ketika mula belajar DAX — cuba *Running total* aduan ikut bulan atau *% of total* ikut agensi, kemudian kaji formulanya. *(Sumber: slaid "Quick measures".)*
+
 ---
 
 ## Langkah 4: Sukatan Kewangan (RM)
@@ -265,7 +287,26 @@ Tambah **Line chart**:
 
 Perhatikan corak — **lonjakan kes banjir** pada musim tengkujuh (Nov–Feb) dan **pencemaran udara** pada musim kering (Jun–Sep). Tambah `Aduan Bulan Lepas` sebagai garisan kedua untuk perbandingan.
 
-> **Nota:** Pastikan `Tahun-Bulan` disusun mengikut turutan kronologi. Jika perlu, tetapkan **Sort by column** `Tahun-Bulan` mengikut satu lajur tarikh, atau guna paksi hierarki tarikh.
+### Sort by Column — susun teks ikut nombor
+
+**Masalah biasa:** lajur teks seperti **Nama Bulan** atau **status** disusun ikut **abjad** (April, August, December…) — bukan urutan sebenar, jadi carta nampak kacau.
+
+**Selesai:**
+1. Pilih lajur teks (cth `Kalendar[Nama Bulan]`) di paparan **Data**.
+2. Reben **Column tools** > **Sort by column** > pilih lajur nombor padanan (`Kalendar[No Bulan]`).
+3. Carta kini susun Jan→Dis dengan betul. (`Tahun-Bulan` dalam format `YYYY-MM` pula sudah susun kronologi secara abjad.)
+
+Ulang untuk `aduan[status]` — cipta lajur terkira `Urutan Status`, kemudian sort `status` mengikutnya supaya carta ikut **aliran proses**, bukan A–Z:
+
+```dax
+Urutan Status =
+SWITCH(aduan[status],
+    "Baru", 1, "Dalam Siasatan", 2, "Selesai", 3, "Ditutup", 4, 99)
+```
+
+> **Syarat:** setiap nilai teks mesti petakan ke **satu** nombor konsisten. *(Sumber: slaid "Sort by Column".)*
+
+> **Tabiat kualiti — semak & troubleshoot sukatan:** Selepas mencipta measure, sahkan ia munasabah: **(1)** sort hasil (% tertinggi/terendah) & siasat nilai ekstrem; **(2)** tambah slicer (bulan/kategori) & periksa nilai pada data ditapis; **(3)** letak ikut kumpulan (zon/agensi) & pastikan baris **Total** betul. Sentiasa guna `DIVIDE` (bukan `/`) supaya bahagi-sifar pulang BLANK. Awas baris Total — ia dinilai dalam *context* tersendiri. *(Sumber: slaid "Checking & troubleshooting calculations".)*
 
 ---
 
@@ -288,6 +329,19 @@ DIVIDE([Jumlah Aduan], SUM(negeri[populasi])) * 100000
 
 Sukatan ini menormalkan kes mengikut saiz penduduk — berguna untuk membandingkan negeri besar dengan negeri kecil secara adil.
 
+### Scatter chart — aduan vs populasi
+
+Carta serakan (**Scatter chart**) memetakan dua nilai numerik pada satu titik — sesuai untuk mencari negeri yang **banyak aduan walaupun populasi kecil**.
+
+Tambah visual **Scatter chart**:
+- **X-axis:** `negeri[populasi]` (set ke **Sum**)
+- **Y-axis:** `Jumlah Aduan` (sukatan — rujuk Langkah 3)
+- **Values / Details:** `negeri[negeri]`
+
+Setiap titik = satu negeri. Cari titik yang **tinggi pada paksi-Y** (banyak aduan) tetapi **kiri pada paksi-X** (populasi kecil) — itulah negeri dengan beban aduan luar biasa berbanding populasinya.
+
+> **⚠️ Gotcha biasa:** Jangan seret `aduan[no_aduan]` terus ke **Y-axis**. Ia kolum **teks**, jadi paksi scatter (yang perlukan nilai numerik beragregat) akan tersekat atau dikunci sebagai *Don't summarize*. Gunakan **sukatan** `Jumlah Aduan` (`COUNTROWS(aduan)`) — lebih tepat (bilang baris, bukan teks unik) dan boleh diguna semula. *(Kalau betul-betul mahu tanpa sukatan: seret `no_aduan`, klik ▼ pada medan dalam well Y-axis → pilih **Count**.)*
+
 ### Matriks agensi × status
 
 Tambah visual **Matrix**:
@@ -305,6 +359,33 @@ Untuk setiap visual, buka anak tetingkap **Format** (ikon berus):
 - Selaraskan **warna** mengikut tema (cth: hijau untuk tema alam sekitar).
 
 > **Konsep penting:** Visual yang baik mempunyai **tajuk jelas**, **label data**, dan **warna konsisten**. Elakkan terlalu banyak warna yang mengelirukan.
+
+### Conditional formatting — heat-map matrix (prestasi vs sasaran)
+
+Gunakan fail **`sasaran.csv`** (sasaran % Selesai setiap agensi) untuk mewarnakan prestasi secara automatik.
+
+1. **Get Data > Text/CSV** → import `sasaran.csv` (**Load** sahaja — tiada hubungan diperlukan; kita guna `LOOKUPVALUE` supaya ia jadi jadual *disconnected*).
+2. Cipta dua measure (rujuk `measures.dax`):
+   ```dax
+   Sasaran % Selesai =
+   LOOKUPVALUE(sasaran[sasaran_selesai], sasaran[agensi], SELECTEDVALUE(aduan[agensi]), 0.70)
+
+   Warna % Selesai =
+   IF([% Selesai] >= [Sasaran % Selesai], "#1a7f4b", "#b42318")
+   ```
+3. Pada matrix (Rows = `agensi[singkatan]`, Values = `% Selesai`), buka **Format > Cell elements > Background color > fx**.
+4. **Format style = Field value**, *Based on field* = **`Warna % Selesai`**. Sel jadi **hijau** jika capai sasaran, **merah** jika tidak.
+
+> **Tiga gaya conditional formatting:** **Gradient** (skala min–max), **Rules** (julat nilai), dan **Field value** (warna terus daripada measure — paling berkuasa). Anda juga boleh gunakan **Data bars** atau **Icons**. *(Sumber: slaid "Conditional formatting".)*
+
+### Top-N filtering — fokus pemain utama
+
+1. Bina bar chart: `negeri[negeri]` × `Jumlah Aduan`.
+2. Pada **Filters pane**, di medan `negeri`, tukar **Filter type = Top N**.
+3. Pilih **Top**, masukkan **5**, seret `Jumlah Aduan` ke **By value** → **Apply filter**.
+4. Visual kini papar hanya 5 negeri teratas. Salin visual & tukar Top→Bottom untuk lihat 5 terendah.
+
+> NRES: "Top 5 negeri ikut Jumlah Aduan" atau "Top 3 kategori ikut Jumlah Kompaun (RM)". *(Sumber: slaid "Top-N filtering".)*
 
 ---
 
@@ -340,6 +421,35 @@ Apabila pengguna memilih satu agensi atau julat tarikh, **semua visual menapis s
 Pilih satu visual, kemudian pada reben **Format** > **Edit interactions**. Anda boleh tetapkan sama ada satu visual **menapis (filter)**, **menyerlah (highlight)**, atau **tidak terjejas (none)** apabila visual lain dipilih. Ini memberi kawalan halus terhadap cara dashboard bertindak balas.
 
 > **Nota:** Beri ruang dan jajaran yang kemas. Guna **Gridlines** dan **Snap to grid** (View > Gridlines) untuk meletakkan visual dengan rapi.
+
+### Tema laporan (Report theme) — warna konsisten
+
+**View > Themes** — pilih theme terbina atau **Accessible themes** (mesra colorblind). Satu set warna + saiz font dikenakan ke **seluruh laporan** sekali gus. Untuk branding rasmi, import fail **JSON** (dataColors, background, foreground, fontSize) via **Browse for themes** (boleh dijana daripada logo guna penjana seperti themes.powerbi.tips).
+
+> NRES: pilih **Accessible theme** + warna korporat supaya agensi (JAS/JPSM/…) mudah dibeza. *(Sumber: slaid "Report theme".)*
+
+### Skop penapis: visual, page, report
+
+Anak tetingkap **Filters** ada **tiga skop**:
+- **Filters on this visual** — kesan satu visual sahaja.
+- **Filters on this page** — kesan semua visual pada halaman itu.
+- **Filters on all pages** — ditetapkan sekali, kesan **semua halaman**.
+
+> **Slicer vs Filters pane:** slicer = kawalan di atas kanvas untuk **pengguna**; Filters pane = **penulis** tetapkan skop. NRES: gunakan report-level filter untuk papar hanya aduan tahun semasa merentas semua halaman. *(Sumber: slaid "Filter scope".)*
+
+---
+
+## Langkah 7B: Senarai Semak Sebelum Publish
+
+Sebelum menerbitkan, lalui senarai semak ini supaya laporan kemas & profesional:
+
+- [ ] **Mobile layout** — **View > Mobile layout**, susun semula visual untuk telefon (boleh skrol; tidak mengubah susunan desktop). Berguna untuk pegawai di lapangan.
+- [ ] **Hide** item pembantu — sorok jadual/lajur/measure pembantu (cth jadual `Kalendar`, lajur `No Bulan`, `Urutan Status`) dengan **Hide in report view**, serta halaman pembantu.
+- [ ] **Lock objects** — **View > Lock objects**; matikan Gridlines/Snap selepas susun atur siap.
+- [ ] **Uji seperti pengguna** — klik slicer, drill, dan **Reset** sebelum publish.
+- [ ] **Format measure** betul — `%` sebagai Percentage, `RM` sebagai Currency.
+
+> *(Sumber: slaid "Pre-publish checklist".)*
 
 ---
 
@@ -403,6 +513,54 @@ Rujuk `snippets/measures.dax` dan `snippets/calculated-columns.dax` untuk semua 
 
 ---
 
+## Latihan Tambahan — Contoh Kes Penggunaan (DAX & Visual)
+
+Kes ini melanjutkan kemahiran Hari 2 dengan **soalan pengurusan sebenar** NRES. Sukatan tambahan disediakan dalam `snippets/measures.dax` (bahagian "Sukatan Tambahan"); fail `data/sasaran.csv` diperlukan untuk kes berkaitan sasaran. Cuba sekurang-kurangnya tiga.
+
+### Kes 1 — KPI visual: bulan ini vs bulan lepas
+**Soalan:** *Adakah kemasukan aduan bulan ini naik atau turun?*
+
+1. Bina visual **KPI**.
+2. **Value:** `Jumlah Aduan` · **Trend axis:** `Kalendar[Tahun-Bulan]` · **Target:** `Aduan Bulan Lepas`.
+3. KPI menunjukkan nilai semasa, garis trend, dan warna (capai/tak capai sasaran) — tanpa data tambahan.
+
+### Kes 2 — Prestasi agensi vs sasaran (gauge / heat-map)
+**Soalan:** *Agensi mana mencapai sasaran % Selesai?*
+
+1. Muat `sasaran.csv` dan cipta `Sasaran % Selesai` + `Warna % Selesai` (lihat Langkah 6 › Conditional formatting).
+2. **Pilihan A — Gauge:** Value = `% Selesai`, Target = `Sasaran % Selesai`, satu gauge per agensi (guna slicer).
+3. **Pilihan B — Matrix heat-map:** Rows = `agensi`, Values = `% Selesai`, background = Field value `Warna % Selesai` (hijau/merah).
+
+### Kes 3 — Analisis Pareto (80/20) dengan Quick measure
+**Soalan:** *Berapa kategori menyumbang majoriti nilai kompaun?*
+
+1. **New quick measure > Running total** bagi `Jumlah Kompaun (RM)` mengikut `kategori`.
+2. Tambah satu lagi quick measure **% of total** bagi `Jumlah Kompaun (RM)`.
+3. Bina **Line and clustered column chart**: lajur = kompaun per kategori (susun menurun), garis = running total % — lihat di mana ia cecah ~80%.
+
+### Kes 4 — Purata bergerak 3 bulan (smoothing trend)
+**Soalan:** *Apakah trend sebenar tanpa "bunyi" bulanan?*
+
+1. Guna measure `Aduan Purata 3 Bulan` (rujuk `measures.dax`).
+2. Pada **line chart** trend, tambah ia sebagai garisan kedua di sebelah `Jumlah Aduan`. Garis purata bergerak melicinkan turun-naik.
+
+### Kes 5 — Ranking negeri dengan RANKX
+**Soalan:** *Apakah kedudukan setiap negeri mengikut jumlah aduan?*
+
+1. Guna measure `Pangkat Negeri` (rujuk `measures.dax`).
+2. Bina **Table**: `negeri[negeri]`, `Jumlah Aduan`, `Pangkat Negeri`. Susun ikut pangkat.
+3. Gabungkan dengan **Top-N filter** (Langkah 6) untuk fokus 5 teratas.
+
+### Kes 6 — Peta per kapita (perbandingan adil)
+**Soalan:** *Negeri mana tinggi aduan **berbanding populasi**?*
+
+1. Guna measure `Aduan per 100k Penduduk`.
+2. Bina **Filled map**: Location = `negeri[negeri]`, Saturation = `Aduan per 100k Penduduk`. Bandingkan dengan peta Jumlah Aduan mentah — negeri kecil mungkin "naik" selepas dinormalkan.
+
+> **🎯 Cabaran gabungan — dashboard eksekutif NRES:** Satukan **KPI (Kes 1)** + **matrix heat-map sasaran (Kes 2)** + **peta Top-5 (Kes 5/6)** + **line chart dengan purata 3 bulan (Kes 4)** pada satu halaman. Pakai satu **Report theme** (Accessible), tetapkan **report-level filter** tahun semasa, dan lengkapkan **senarai semak sebelum publish** (Langkah 7B) sebelum menerbitkan.
+
+---
+
 ## Ringkasan Hari 2
 
 Anda telah berjaya:
@@ -411,7 +569,11 @@ Anda telah berjaya:
 - [x] Menambah **lajur terkira**: `Tahun`, `Tempoh Hari`, `Kumpulan Tempoh`
 - [x] Mencipta **13 sukatan** — kiraan, peratus, kewangan (RM), dan kepintaran masa
 - [x] Memahami `CALCULATE`, `DIVIDE`, `AVERAGEX`, `FILTER`, `TOTALYTD`, `DATEADD`
+- [x] Memahami **evaluation context** (row vs filter) dan mencuba **Quick measures**
 - [x] Membina visual **line, map, matrix** dengan pemformatan kemas
+- [x] Membetulkan susunan dengan **Sort by Column** & menyemak/troubleshoot sukatan
+- [x] Menggunakan **conditional formatting** (sasaran), **Top-N filtering**, dan **report theme**
+- [x] Memahami **skop penapis** (visual/page/report) dan **senarai semak sebelum publish**
 - [x] Menyusun **dashboard interaktif** dengan slicer dan edit interactions
 - [x] **Menerbitkan** ke Power BI Service (model semantik + laporan) dan mencipta dashboard + Q&A
 

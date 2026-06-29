@@ -6,8 +6,9 @@ Lab ini menguji kemahiran DAX (sukatan & lajur terkira), kepintaran masa, visual
 
 | Fail | Kegunaan |
 |------|----------|
-| `measures.dax` | Sukatan DAX siap pakai untuk dashboard |
-| `calculated-columns.dax` | Lajur terkira + jadual Kalendar |
+| `measures.dax` | Sukatan DAX siap pakai (termasuk bahagian "Sukatan Tambahan") |
+| `calculated-columns.dax` | Lajur terkira (termasuk `Urutan Status`) + jadual Kalendar |
+| `../data/sasaran.csv` | Sasaran % Selesai setiap agensi — untuk conditional formatting (Latihan 8) |
 
 ## Persediaan
 
@@ -39,15 +40,34 @@ Cipta `Aduan Bulan Lepas` dan `Perubahan Bulanan %`. Bina **line chart**: `Jumla
 - Tambah **Matrix**: baris = `agensi`, lajur = `status`, nilai = `Jumlah Aduan`.
 - Susun semua visual menjadi satu halaman dashboard yang kemas.
 
-### Latihan 6 — Terbitkan (cabaran)
+### Latihan 6 — Quick measures & Sort by Column
+- **Quick measure:** klik kanan `aduan` > **New quick measure** > *Running total* bagi `Jumlah Aduan` ikut `Kalendar[Date]`. Klik measure terhasil untuk kaji formula DAX-nya.
+- **Sort by Column:** sort `Kalendar[Nama Bulan]` ikut `Kalendar[No Bulan]`. Cipta lajur `Urutan Status` (rujuk `calculated-columns.dax`) dan sort `aduan[status]` mengikutnya supaya carta ikut aliran proses (Baru → … → Ditutup).
+
+### Latihan 7 — Conditional formatting & Top-N
+1. Muat `../data/sasaran.csv` (Load). Cipta `Sasaran % Selesai` dan `Warna % Selesai` (rujuk `measures.dax`).
+2. Matrix: Rows = `agensi[singkatan]`, Values = `% Selesai`. Format > Cell elements > Background color > **fx > Field value** = `Warna % Selesai` (hijau/merah ikut sasaran).
+3. Bar chart `negeri` × `Jumlah Aduan` → Filters pane > **Top N** = Top 5 By value `Jumlah Aduan`.
+
+### Latihan 8 — Polish & sedia publish
+- **View > Themes:** pilih satu **Accessible theme**.
+- **Filter scope:** tambah satu **report-level filter** (`Kalendar[Tahun]` = tahun semasa).
+- **Senarai semak sebelum publish:** Mobile layout, Hide jadual/lajur pembantu (`Kalendar`, `Urutan Status`), Lock objects, dan uji slicer.
+
+### Latihan 9 — Terbitkan (cabaran)
 1. **Publish** laporan ke Power BI Service (perlu akaun kerja/sekolah).
 2. Cipta **dashboard** dengan menyemat (pin) visual penting.
 3. Tetapkan penapis dan terokai ciri **Q&A**.
+
+> **Latihan Tambahan (use cases):** cuba kes DAX & visual (KPI visual, Pareto, purata bergerak 3 bulan, RANKX, peta per kapita) dalam bahagian **[Latihan Tambahan — Contoh Kes Penggunaan](../README.md#latihan-tambahan--contoh-kes-penggunaan-dax--visual)** README Hari 2.
 
 ## Semakan kendiri
 
 - [ ] Jadual Kalendar wujud dan berkaitan dengan `aduan`
 - [ ] Sekurang-kurangnya 8 sukatan dicipta dan berfungsi
-- [ ] Line chart trend bulanan memaparkan corak musim
+- [ ] Memahami evaluation context (row vs filter) & mencuba satu Quick measure
+- [ ] Line chart trend bulanan memaparkan corak musim (bulan disusun betul via Sort by Column)
+- [ ] Conditional formatting (Field value `Warna % Selesai`) & Top-N berfungsi
+- [ ] Report theme dipakai; report-level filter & senarai semak sebelum publish dilengkapkan
 - [ ] Slicer, Map, dan Matrix berfungsi serentak
 - [ ] Laporan berjaya diterbitkan ke Power BI Service

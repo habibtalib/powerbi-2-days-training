@@ -25,6 +25,17 @@ SWITCH(
     "> 1 bulan"
 )
 
+// Urutan status (untuk "Sort by Column" — susun status ikut aliran proses, bukan A–Z)
+// Selepas cipta: pilih lajur status > Column tools > Sort by column > Urutan Status
+Urutan Status =
+SWITCH(aduan[status],
+    "Baru", 1,
+    "Dalam Siasatan", 2,
+    "Selesai", 3,
+    "Ditutup", 4,
+    99
+)
+
 
 // ---------- Jadual Kalendar (Modeling > New table) ----------
 // Selepas dicipta, buat hubungan: aduan[tarikh_terima]  →  Kalendar[Date]
