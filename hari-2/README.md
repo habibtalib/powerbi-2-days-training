@@ -8,7 +8,7 @@ Panduan langkah demi langkah untuk menyiapkan **Dashboard Aduan Alam Sekitar NRE
 - Jadual **Kalendar** untuk analisis berasaskan masa
 - **Lajur terkira** (Tahun, Tempoh Hari, Kumpulan Tempoh)
 - 13 **sukatan (measures)** — kiraan, peratusan, kewangan (RM), dan kepintaran masa
-- Visual lanjutan: **line chart** trend, **map**, dan **matrix**
+- Visual lanjutan: **line, map, matrix, scatter, funnel, ribbon, treemap**, **small multiples** & visual **AI**
 - Dashboard interaktif dengan **slicer**
 - Menerbitkan laporan ke **Power BI Service**
 
@@ -367,6 +367,48 @@ Tambah visual **Matrix**:
 
 Ini memberi jadual silang yang menunjukkan beban kerja setiap agensi mengikut status.
 
+### Galeri visual lain — funnel, ribbon, treemap & visual AI
+
+Selain visual di atas, Power BI sediakan beberapa visual teras lain yang berguna untuk dataset NRES. Cuba sekurang-kurangnya dua.
+
+#### Funnel — aliran status kes
+
+Visual **Funnel** menunjukkan pengurangan kuantiti merentas peringkat — sesuai untuk **kitaran hayat aduan**.
+
+- **Category:** `aduan[status]`
+- **Values:** `Jumlah Aduan`
+
+Susun status mengikut peringkat (Baru → Dalam Siasatan → Selesai → Ditutup) dengan **Sort by Column** pada lajur `Urutan Status` (dicipta dalam Langkah 5). Setiap aras corong = bilangan kes pada status itu, dengan **peratus penyusutan** automatik antara aras.
+
+#### Ribbon chart — perubahan ranking ikut masa
+
+**Ribbon chart** ialah column chart yang menyambung antara tempoh dengan reben — aras teratas sentiasa kategori berpangkat tertinggi, jadi **silang reben = pertukaran kedudukan**.
+
+- **X-axis:** `Kalendar[Tahun-Bulan]`
+- **Legend:** `agensi[singkatan]`
+- **Y-axis:** `Jumlah Aduan`
+
+Berguna untuk lihat agensi mana **naik/turun pangkat** beban aduan dari bulan ke bulan. *(Slaid menyebut Ribbon chart — di sinilah ia dipraktikkan.)*
+
+#### Treemap — bahagian-keseluruhan padat
+
+**Treemap** memaparkan saiz relatif sebagai segi empat berlapis — alternatif donut yang muat banyak kategori.
+
+- **Category:** `kategori[kategori]` (atau `agensi[singkatan]`)
+- **Values:** `Jumlah Aduan`
+- **Details (pilihan):** `aduan[status]` untuk pecahan dalam setiap blok
+
+Blok terbesar = kategori paling banyak aduan; mata cepat tangkap dominasi tanpa membaca paksi.
+
+#### Visual AI — Decomposition tree & Smart narrative
+
+Dua visual **AI** (ikon ✨ dalam pane Visualizations) menambah analisis automatik:
+
+1. **Decomposition tree** — letak `Jumlah Aduan` pada **Analyze**, dan `agensi[singkatan]`, `negeri[zon]`, `kategori[kategori]` pada **Explain by**. Klik **+** pada nod untuk **drill** — pilih "High value" supaya Power BI auto-buka cabang terbesar. Bagus untuk jawab *"apa yang mendorong jumlah ini?"* secara interaktif.
+2. **Smart narrative** — klik kanan kanvas > **Summarize**, atau tambah visual **Smart narrative**. Power BI **jana ringkasan teks dinamik** (cth "Jumlah aduan ialah 480, dipacu oleh JAS…") yang dikemas kini bila slicer ditapis. Sesuai untuk tajuk eksekutif dashboard.
+
+> **Konsep — kategori visual:** *kad* (Card/KPI), *carta* (bar/line/scatter/funnel/ribbon/treemap), *jadual* (Table/Matrix), *geografi* (Map), *AI* (Q&A, Decomposition tree, Key influencers, Smart narrative). Pilih ikut **soalan**, bukan ikut "cantik": perbandingan→bar, trend→line, bahagian→donut/treemap, aliran→funnel, ranking masa→ribbon, taburan→scatter, geografi→map, "kenapa"→AI.
+
 ### Pemformatan asas
 
 Untuk setiap visual, buka anak tetingkap **Format** (ikon berus):
@@ -595,7 +637,8 @@ Anda telah berjaya:
 - [x] Mencipta **13 sukatan** — kiraan, peratus, kewangan (RM), dan kepintaran masa
 - [x] Memahami `CALCULATE`, `DIVIDE`, `AVERAGEX`, `FILTER`, `TOTALYTD`, `DATEADD`
 - [x] Memahami **evaluation context** (row vs filter) dan mencuba **Quick measures**
-- [x] Membina visual **line, map, matrix** dengan pemformatan kemas
+- [x] Membina visual **line, map, matrix, scatter, funnel, ribbon, treemap** + **small multiples** dengan pemformatan kemas
+- [x] Mencuba visual **AI** — **Decomposition tree**, **Smart narrative**, dan **Q&A**
 - [x] Membetulkan susunan dengan **Sort by Column** & menyemak/troubleshoot sukatan
 - [x] Menggunakan **conditional formatting** (sasaran), **Top-N filtering**, dan **report theme**
 - [x] Memahami **skop penapis** (visual/page/report) dan **senarai semak sebelum publish**
