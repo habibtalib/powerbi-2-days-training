@@ -41,11 +41,14 @@ Sebelum mula, kenali bahagian utama tetingkap Power BI Desktop:
 
 | Bahagian | Fungsi |
 |----------|--------|
-| **Ribbon** (atas) | Menu arahan: Home, Insert, Modeling, View, dll. |
+| **Header** (paling atas) | Butang Save / Undo / Redo, nama fail (`.pbix`), Search, dan **Sign in** akaun Microsoft 365 |
+| **Ribbon** (atas) | Tab kekal (File, Home, Help) + tab kontekstual (Modeling, View, Insert, Format, Table/Column/Measure tools) |
+| **Formula Bar** | Tempat menulis **DAX** untuk measure, calculated column & calculated table (muncul ikut konteks) |
 | **Kanvas** (tengah) | Tempat anda susun visual laporan |
 | **Anak tetingkap Visualizations** (kanan) | Pilih jenis carta & seret medan ke dalam slot (Axis, Values, Legend) |
 | **Anak tetingkap Data / Fields** (paling kanan) | Senarai semua jadual & lajur dalam model |
-| **3 ikon paparan** (tepi kiri) | Tukar antara paparan **Report**, **Table**, dan **Model** |
+| **Footer** (bawah) | Bilangan halaman, kawalan zoom, dan statistik jadual/lajur |
+| **Ikon paparan** (tepi kiri) | Tukar antara paparan **Report**, **Table**, dan **Model** |
 
 **Tiga paparan utama** (ikon di tepi kiri tetingkap):
 
@@ -53,13 +56,19 @@ Sebelum mula, kenali bahagian utama tetingkap Power BI Desktop:
 2. **Table view** (ikon jadual) — lihat data dalam bentuk jadual.
 3. **Model view** (ikon hubungan/gambarajah) — uruskan jadual dan hubungan.
 
-> **Konsep penting:** Kita akan kerap bertukar antara tiga paparan ini sepanjang kursus. Ingat lokasi ketiga-tiga ikon di tepi kiri.
+> **Konsep penting:** Kita akan kerap bertukar antara tiga paparan ini sepanjang kursus. Ingat lokasi ikon di tepi kiri.
+
+> **Nota:** Versi terkini Power BI Desktop menambah paparan ke-4, **DAX Query view**, untuk menjalankan kueri DAX secara langsung. Ia untuk pengguna lanjutan — **tidak digunakan** dalam bengkel ini.
 
 ---
 
 ## Pengenalan Power BI
 
-**Power BI** ialah alat *business intelligence* daripada Microsoft untuk menukar data mentah menjadi laporan dan dashboard interaktif.
+**Power BI** ialah alat *business intelligence* (BI) daripada Microsoft untuk menukar data mentah menjadi laporan dan dashboard interaktif.
+
+> **Konsep — Anatomi BI:** Mana-mana projek BI merangkumi lima konsep teras: **Domain** (bidang perniagaan — di sini, penguatkuasaan alam sekitar NRES), **Data** (punca data — fail CSV aduan), **Model** (model semantik: bersih, kategori & hubungkan), **Analysis** (agregat & KPI dengan DAX), dan **Visualization** (carta, laporan & dashboard). Hari 1 meliputi Domain → Data → Model → Visualization asas.
+
+> **Konsep — Power BI ialah koleksi komponen,** bukan satu aplikasi tunggal: **Power Query** (transformasi data/ETL, bahasa M), **Power Pivot** (pemodelan + DAX → model semantik), **visual** (kanvas laporan), **Power BI Desktop** (tempat kerja kita), **Power BI Service** (awan untuk terbit & kongsi — kini sebahagian Microsoft Fabric), serta **Gateway** & **apl mudah alih**. Power BI Desktop **percuma**; ia menanam Power Query dan Power Pivot di dalamnya.
 
 Aliran kerja Power BI sentiasa mengikut 5 peringkat ini:
 
@@ -116,9 +125,17 @@ Selepas selesai, anda sepatutnya nampak **4 jadual** dalam anak tetingkap **Data
 
 ## Langkah 2: Bersihkan Data dengan Power Query
 
-**Power Query** ialah enjin transformasi data Power BI. Setiap perubahan yang anda buat direkod sebagai satu **langkah (Applied Step)**, jadi proses pembersihan boleh diulang secara automatik setiap kali data dimuat semula.
+**Power Query** ialah enjin transformasi data Power BI (sejenis alat **ETL** — Extract, Transform, Load).
+
+> **Konsep — Query sebagai resipi:** Setiap query ialah satu senarai **Applied Steps** yang dirakam mengikut urutan (Power BI auto-jana langkah awal: *Source*, *Promoted Headers*, *Changed Type*). Klik mana-mana langkah untuk melihat keadaan data pada peringkat itu — anda boleh edit, susun semula, atau buang (X). Di sebalik tabir, setiap langkah ialah satu baris kod **M**. Apabila data baharu masuk, satu klik **Refresh** menjalankan semula **semua** langkah secara automatik — sebab itu kita bersihkan di sini, bukan dalam Excel.
 
 Buka **Power Query Editor** (jika belum terbuka): **Home > Transform data**. Pilih query **`aduan`** di anak tetingkap **Queries** (kiri).
+
+> **Awareness — gabung data (tidak digunakan dalam bengkel ini, data kita sudah kemas):**
+> - **Merge** = cantum dua query ikut lajur sepadan (seperti SQL *JOIN*) → menambah **lajur**.
+> - **Append** = tindan baris dua/lebih query → menambah **baris** (cth satukan fail aduan Jan + Feb + Mac menjadi satu jadual `aduan`).
+> - **Unpivot Columns** = tukar data "wide" (satu lajur per bulan) kepada format panjang (lajur *Attribute* + *Value*) supaya mudah dijumlah & ditapis.
+> - Query perantara boleh dimatikan **Enable load** supaya ia tidak menjadi jadual berasingan dalam model.
 
 ### 2.1 Naikkan tajuk (Promote Headers)
 
