@@ -314,11 +314,21 @@ SWITCH(aduan[status],
 
 ### Peta taburan negeri
 
-Tambah visual **Map** (atau **Filled map**):
-- **Location:** `negeri[negeri]`
-- **Bubble size / Saturation:** `Jumlah Aduan`
+> **Prasyarat geocoding:** pilih jadual `negeri` → klik lajur `negeri` → **Column tools > Data category > State or Province**. Ini bantu Power BI meletakkan nama negeri dengan tepat. Peta juga perlukan **sambungan internet**; jika visual kelabu/disekat, pentadbir tenant mungkin matikan tetapan **"Map and filled map visuals"**.
 
-Power BI akan meletakkan setiap negeri Malaysia di atas peta. Negeri dengan lebih banyak kes akan kelihatan lebih besar/gelap.
+Pilih **satu** daripada dua jenis peta:
+
+**Map (peta gelembung)** — saiz gelembung ikut bilangan kes:
+- **Location:** `negeri[negeri]`
+- **Bubble size:** `Jumlah Aduan`
+
+**Filled map (choropleth)** — warna gelap/cerah ikut bilangan kes:
+- **Location:** `negeri[negeri]` (sahaja)
+- Untuk warna: buka **Format** (ikon berus) → **Fill colors** → **fx** → *Format style* = **Gradient**, *Based on field* = **`Jumlah Aduan`** → **OK**.
+
+> **⚠️ Nota versi:** Filled map **tiada lagi** medan "Color saturation" (Microsoft telah membuangnya). Pewarnaan kini dibuat melalui **conditional formatting** (`fx`) pada **Fill colors**, bukan dengan menyeret medan ke well "Saturation".
+
+Negeri dengan lebih banyak kes akan kelihatan **lebih besar** (Map) atau **lebih gelap** (Filled map).
 
 ### Sukatan per kapita
 
@@ -613,7 +623,7 @@ Kes ini melanjutkan kemahiran Hari 2 dengan **soalan pengurusan sebenar** NRES. 
 **Soalan:** *Negeri mana tinggi aduan **berbanding populasi**?*
 
 1. Guna measure `Aduan per 100k Penduduk`.
-2. Bina **Filled map**: Location = `negeri[negeri]`, Saturation = `Aduan per 100k Penduduk`. Bandingkan dengan peta Jumlah Aduan mentah — negeri kecil mungkin "naik" selepas dinormalkan.
+2. Bina **Filled map**: Location = `negeri[negeri]`, kemudian warnakan via **Format > Fill colors > fx > Gradient** berdasarkan `Aduan per 100k Penduduk`. Bandingkan dengan peta Jumlah Aduan mentah — negeri kecil mungkin "naik" selepas dinormalkan.
 
 ### Kes 7 — Kategori dalam setiap agensi (small multiples)
 **Soalan:** *Bagaimana taburan status berbeza antara kategori dalam setiap agensi?*

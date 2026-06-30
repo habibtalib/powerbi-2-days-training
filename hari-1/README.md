@@ -577,9 +577,9 @@ Bahagian ini mengaitkan kemahiran Hari 1 dengan **soalan pengurusan sebenar** NR
 
 1. **Tetapkan kategori data dahulu:** pilih jadual `negeri`, klik lajur `negeri`, kemudian **Column tools > Data category > State or Province**. Ini membantu Power BI memetakan nama negeri dengan betul.
 2. Bina visual **Map** (peta gelembung) — **Location:** `negeri[negeri]` · **Bubble size:** `aduan[no_aduan]` (Count).
-3. Untuk kesan "heatmap" sebenar, guna **Filled map (choropleth)** dan letak Count pada **Legend > color saturation** — negeri dengan lebih banyak aduan diwarnakan lebih gelap.
+3. Untuk kesan "heatmap" sebenar, guna **Filled map (choropleth)**: Location = `negeri[negeri]`, kemudian warnakan melalui **Format > Fill colors > fx > Gradient** berdasarkan `aduan[no_aduan]` (Count) — negeri dengan lebih banyak aduan diwarnakan lebih gelap. *(Filled map tiada lagi well "color saturation"; warna kini guna conditional formatting.)*
 
-> **Nota skop:** Visual **Map** & pewarnaan tepu (color saturation) diperkenalkan penuh pada **Hari 2**. Jika pemetaan kurang tepat (nama negeri samar), gunakan **Kes 3** (column chart disusun menurun) sebagai pandangan "hotspot" yang boleh dipercayai untuk Hari 1.
+> **Nota skop:** Visual **Map** & pewarnaan gradien (conditional formatting) diperkenalkan penuh pada **Hari 2**. Jika pemetaan kurang tepat (nama negeri samar), gunakan **Kes 3** (column chart disusun menurun) sebagai pandangan "hotspot" yang boleh dipercayai untuk Hari 1.
 
 **Hasil:** peta tumpuan aduan — versi geografi bagi ranking negeri di Kes 3.
 
